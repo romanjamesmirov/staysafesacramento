@@ -72,7 +72,8 @@ function supplycons(supplies) {
         }
         return (
           <li key={index} className='Supplycon-item' title={supply}>
-            <img src={icon} alt={supply} /></li>
+            <img src={icon} alt={supply} />
+            <span>{supply}</span></li>
         )
       })}
     </ul>

@@ -24,9 +24,13 @@ li {
 	align-items: center;
 }
 
+li:first-child button {
+	border-top: 1px solid #eee;
+}
+
 .Person-name {
 	display: block;
-	margin-right: 1rem;
+	margin-right: 2rem;
 	font-size: 1.9rem;
 }
 
@@ -35,9 +39,17 @@ li {
 }
 
 .Supplycon-item {
-	margin-right: 1rem;
+	margin-right: 2rem;
 }
 
 img {
 	width: 1.4em;
+	margin: 0 auto;
+}
+
+.Supplycon-item span {
+	font-size: 0.5em;
+	text-align: center;
+	/* width: 2.8em; */
+	display: block;
 }
