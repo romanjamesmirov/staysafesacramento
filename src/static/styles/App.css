@@ -1,0 +1,43 @@
+h3 {
+	padding: 1rem 2rem;
+}
+
+/* leave almost all styles the same to make it obvious it's a button */
+/* native, platform-specific styles do best at making it clear what's what */
+h3 button {
+	display: inline-block;
+	padding: 0.4rem 0.8rem;
+	margin: 0 0.5rem;
+}
+
+li {
+	list-style-type: none;
+}
+
+.Person-item button {
+	border: none;
+	border-bottom: 1px solid #eee;
+	width: 100vw;
+	text-align: left;
+	padding: 1rem 2rem;
+	display: flex;
+	align-items: center;
+}
+
+.Person-name {
+	display: block;
+	margin-right: 1rem;
+	font-size: 1.9rem;
+}
+
+.Supplycon-list {
+	display: flex;
+}
+
+.Supplycon-item {
+	margin-right: 1rem;
+}
+
+img {
+	width: 1.4em;
+}
