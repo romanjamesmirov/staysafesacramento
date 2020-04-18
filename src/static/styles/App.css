@@ -1,3 +1,17 @@
+.Me {
+	display: block;
+	width: 1.5em;
+	text-decoration: none;
+	margin: 2rem 2rem 1rem auto;
+}
+
+.Icon-label {
+	font-size: 0.5em;
+	font-weight: 700;
+	display: block;
+	text-align: center;
+}
+
 h3 {
 	padding: 1rem 2rem;
 }
@@ -7,31 +21,33 @@ h3 {
 h3 button {
 	display: inline-block;
 	padding: 0.4rem 0.8rem;
-	margin: 0 0.5rem;
+	margin: 0 0.8rem;
+	cursor: pointer;
 }
 
 li {
 	list-style-type: none;
 }
 
-.Person-item button {
+.Person-item a {
 	border: none;
 	border-bottom: 1px solid #eee;
 	width: 100vw;
 	text-align: left;
+	text-decoration: none;
 	padding: 1rem 2rem;
 	display: flex;
 	align-items: center;
+	font-weight: 500;
 }
 
-li:first-child button {
-	border-top: 1px solid #eee;
+.Person-item:hover, .Person-item:focus {
+	background-color: #f8f8f8;
 }
 
 .Person-name {
 	display: block;
-	margin-right: 2rem;
-	font-size: 1.9rem;
+	padding-right: 1rem;
 }
 
 .Supplycon-list {
@@ -39,17 +55,10 @@ li:first-child button {
 }
 
 .Supplycon-item {
-	margin-right: 2rem;
+	padding-left: 2rem;
 }
 
 img {
 	width: 1.4em;
 	margin: 0 auto;
-}
-
-.Supplycon-item span {
-	font-size: 0.5em;
-	text-align: center;
-	/* width: 2.8em; */
-	display: block;
 }
