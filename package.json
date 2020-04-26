@@ -3,18 +3,6 @@
   "version": "1.0.0",
   "description": "The pandemic affects us all; give others what you don't need.",
   "main": "server.js",
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "express": "^4.17.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1",
-    "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
-  },
   "scripts": {
     "start": "node server",
     "client": "react-scripts start",
@@ -23,6 +11,36 @@
     "eject": "react-scripts eject",
     "server": "nodemon server",
     "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/romanjamesmirov/staysafesacramento.git"
+  },
+  "author": "Roman Mirov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/romanjamesmirov/staysafesacramento/issues"
+  },
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.10",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.1",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.1.0",
+    "nodemon": "^2.0.3"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,11 +56,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "concurrently": "^5.1.0",
-    "nodemon": "^2.0.3"
-  },
-  "author": "Roman Mirov",
-  "license": "MIT"
+  }
 }
