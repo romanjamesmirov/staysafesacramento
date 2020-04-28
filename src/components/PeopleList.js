@@ -62,7 +62,4 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, { getUsers })(PeopleList);
 
-/**
- * $
- * https://tylermcginnis.com/react-router-pass-props-to-link
- */
+//$ https://tylermcginnis.com/react-router-pass-props-to-link

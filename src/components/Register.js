@@ -1,18 +1,10 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { setUser } from '../actions/userActions';
+import { registerUser } from '../actions/userActions'; //!
 import { Redirect } from 'react-router-dom';
 import { Supplycon, allSuppliesObj, objToArr } from './supplyMethods';
 import '../static/styles/Register.css';
-
-/* 
-
-https://www.freecodecamp.org/news/redux-get-the-ball-rolling-in-10min-9d9551ff4b3c/ 
-
-i get it now. reducers are the middleman between state and actions which have the goal of changing state. reducers take the current state and return a new one. that way you never actually touch the current/previous state and therefore they call it immutable/read-only. so the app isn't based on the original state object (store?). it's based on the reducers. 
-
-*/
 
 class Register extends Component {
 	constructor(props) {
@@ -23,7 +15,7 @@ class Register extends Component {
 			password: '',
 			have: { ...allSuppliesObj },
 			need: { ...allSuppliesObj },
-			toPeopleList: false //1
+			toPeopleList: false //@
 		}
 		this.onChange = this.onChange.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
@@ -32,7 +24,7 @@ class Register extends Component {
 	onSubmit(e) {
 		e.preventDefault();
 		const { name, username, password, have, need } = this.state;
-		this.props.setUser(
+		this.props.registerUser(
 			{ name, username, password, have: objToArr(have), need: objToArr(need) }
 		);
 		this.setState({ toPeopleList: true });
@@ -84,9 +76,9 @@ class Register extends Component {
 	}
 }
 
-Register.propTypes = { setUser: PropTypes.func.isRequired };
+Register.propTypes = { registerUser: PropTypes.func.isRequired };
 
-export default connect(null, { setUser })(Register);
+export default connect(null, { registerUser })(Register);
 
 function checkboxList(group, state, onChange) { // group === 'have' or 'need'
 	let checkboxes = [];
@@ -105,4 +97,6 @@ function checkboxList(group, state, onChange) { // group === 'have' or 'need'
 	return checkboxes;
 }
 
-//1. https://tylermcginnis.com/react-router-programmatically-navigate/
+//! https://www.freecodecamp.org/news/redux-get-the-ball-rolling-in-10min-9d9551ff4b3c/ I get it now. Reducers are the middleman between state and actions. Actions have the goal of changing state, like setState. But the store is read-only. Neither actions nor reducers update state. Instead, reducers return a new state based on the current state and the action's payload. So the app isn't based on state. It's based on the reducers. 
+
+//@. https://tylermcginnis.com/react-router-programmatically-navigate/

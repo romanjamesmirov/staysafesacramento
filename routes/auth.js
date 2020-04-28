@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
 
 	// Create, assign, and send the JSON web token. 
 	const token = jwt.sign({ name: user.name, username }, process.env.TOKEN_SECRET);
-	res.send({ name: user.name, username, token });
+	res.json({ name: user.name, have: user.have, need: user.need, token });
 });
 
 module.exports = router;
@@ -58,8 +58,8 @@ module.exports = router;
 /**
  * %
  * https://stackoverflow.com/a/43492093
- * 
+ *
  * *
  * Update to include supplies? i.e. You must need and/or have at least one thing
- * 
+ *
  */
