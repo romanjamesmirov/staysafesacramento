@@ -1,66 +1,68 @@
-import React, { Fragment, Component } from 'react'
-import { Link } from 'react-router-dom'
-import Supplycons from './Supplycons'
-import Me from '../static/icons/me.svg'
+import React, { Fragment, Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getUsers } from '../actions/userActions';
+import { Link } from 'react-router-dom';
+import { Supplycons } from './supplyMethods';
+import Me from '../static/icons/me.svg';
 
-const people = [
-	{ name: 'John D.', has: ['Ramen noodles'], needs: [] },
-	{ name: 'Grant H.', has: [], needs: ['Toilet paper'] },
-	{ name: 'Hugh J.', has: [], needs: ['Hand sanitizer'] },
-	{ name: 'Bob F.', has: ['Toilet paper'], needs: [] },
-	{ name: 'Kelly S.', has: ['Hand sanitizer', 'Face masks'], needs: [] },
-	{ name: 'Fred W.', has: ['Hand sanitizer'], needs: ['Toilet paper'] },
-	{ name: 'Bill B.', has: [], needs: ['Face masks'] },
-	{ name: 'Walt D.', has: [], needs: ['Ramen noodles', 'Hand sanitizer'] },
-	{ name: 'Stanley L.', has: ['Toilet paper'], needs: [] },
-	{ name: 'Lisa M.', has: [], needs: ['Toilet paper'] },
-]
-
-export default class PeopleList extends Component {
+class PeopleList extends Component {
 	constructor(props) {
-		super(props)
+		super(props);
 		this.state = {
-			showing: 'has'
-		}
-		this.onShowingClick = this.onShowingClick.bind(this)
+			group: 'have'
+		};
+		this.onGroupClick = this.onGroupClick.bind(this);
 	}
 
-	onShowingClick() {
-		if (this.state.showing === 'has') this.setState({ showing: 'needs' })
-		else this.setState({ showing: 'has' })
+	componentDidMount() { this.props.getUsers(); }
+
+	onGroupClick() {
+		this.setState({ group: this.state.group === 'need' ? 'have' : 'need' });
 	}
 
 	render() {
-		const { showing } = this.state
+		const { group } = this.state;
 		return (
 			<Fragment>
 				<Link to='/me' className='Me'>
 					<img src={Me} alt='My profile' />
-					<span className='Icon-label'>Me</span>
 				</Link>
 
 				<h3>
-					<span>Show people who</span>
-					<button onClick={this.onShowingClick}>{showing === 'has' ? 'have' : 'need'}</button>
+					<span>Talk to people who</span>
+					<button onClick={this.onGroupClick}>{group}</button>
 					<span>supplies:</span></h3>
 
-				<ul>
-					{people.map((person, index) => {
-						if (person[showing].length === 0) return undefined
+				<ul>{
+					this.props.allUsers.map((user, index) => {
+						if (user[group].length === 0) return undefined;
+						if (user.username === this.props.username) return undefined; // Don't show the user to himself. 
 						return (
 							<li key={index} className='Person-item'>
-								<Link to={{ pathname: '/chat', state: { person } }}> {/* 1 */}
-									<span className='Person-name'>{person.name}</span>
-									{Supplycons(person[showing])}
+								<Link to={{ pathname: '/chat', state: { user } }}>
+									<span className='Person-name'>{user.name}</span>
+									{Supplycons(user[group])}
 								</Link>
-							</li>)
-					})}
-				</ul>
+							</li>
+						); //$
+					})
+				}</ul>
 			</Fragment>
-		)
+		);
 	}
 }
 
+PeopleList.propTypes = { getUsers: PropTypes.func.isRequired };
+
+const mapStateToProps = state => ({
+	allUsers: state.user.allUsers,
+	username: state.user.username
+});
+
+export default connect(mapStateToProps, { getUsers })(PeopleList);
+
 /**
- * 1: tylermcginnis.com/react-router-pass-props-to-link
+ * $
+ * https://tylermcginnis.com/react-router-pass-props-to-link
  */

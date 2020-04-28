@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react'
 import io from 'socket.io-client'
-import Supplycons from './Supplycons'
+import { Supplycons } from './supplyMethods'
 
 export default class DirectChat extends Component {
 	constructor(props) {

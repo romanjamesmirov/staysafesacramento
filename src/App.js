@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom'; // freecodecamp.org/news/react-router-in-5-minutes
+import { Provider } from 'react-redux';
+import store from './store';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'; //#
+//  ▲  React, Redux, Router  ▼  App components
 import PeopleList from './components/PeopleList';
 import DirectChat from './components/DirectChat';
 import Me from './components/Me';
@@ -9,12 +12,20 @@ import './static/styles/App.css';
 export default class App extends Component {
   render() {
     return (
-      <Switch>
-        <Route path='/' component={PeopleList} exact />
-        <Route path='/chat' component={DirectChat} />
-        <Route path='/me' component={Me} />
-        <Route path='/register' component={Register} />
-      </Switch>
+      <React.StrictMode>
+        <Provider store={store}>
+          <BrowserRouter>
+            <Switch>
+              <Route path='/' component={PeopleList} exact />
+              <Route path='/chat' component={DirectChat} />
+              <Route path='/me' component={Me} />
+              <Route path='/register' component={Register} />
+            </Switch>
+          </BrowserRouter>
+        </Provider>
+      </React.StrictMode>
     );
   }
 }
+
+//# freecodecamp.org/news/react-router-in-5-minutes

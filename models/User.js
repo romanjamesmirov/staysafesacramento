@@ -19,6 +19,14 @@ const userSchema = new mongoose.Schema({
 		min: 8,
 		max: 1024
 	},
+	have: {
+		type: [String], 
+		required: true
+	},
+	need: {
+		type: [String],
+		required: true
+	},
 	date: {
 		type: Date,
 		default: Date.now

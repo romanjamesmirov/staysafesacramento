@@ -10,10 +10,10 @@ const { registerValidation, loginValidation } = require('../validation');
 
 router.post('/register', async (req, res) => {
 	// Validate the data before doing anything else to make sure it will pass requirements of User properties. 
-	const { error } = registerValidation(req.body);
+	const { error } = registerValidation(req.body); //*
 	if (error) return res.status(400).send(error.details[0].message);
 
-	const { name, username, password } = req.body;
+	const { name, username, password, have, need } = req.body;
 
 	// Return an error message if the username is taken.
 	const userExists = await User.findOne({ username });
@@ -21,17 +21,12 @@ router.post('/register', async (req, res) => {
 
 	const hashedPassword = await bcrypt.hash(password, 10); // Can only decrypt if you have original password. 
 
-	const user = new User({
-		name: name,
-		username: username,
-		password: hashedPassword
-	});
+	const user = new User({ name, username, password: hashedPassword, have, need });
 	try {
 		const savedUser = await user.save();
-		res.json({ name, username }); /* 1 */
-	} catch (error) {
-		res.status(400).send(error);
-	}
+		const token = jwt.sign({ name, username }, process.env.TOKEN_SECRET);
+		res.json({ token }); //%
+	} catch (error) { res.status(400).send(error); }
 });
 
 /*
@@ -39,7 +34,7 @@ router.post('/register', async (req, res) => {
 */
 
 router.post('/login', async (req, res) => {
-	// Not sure why we need to tell the user why their username or PW is invalid but we'll tell them. 
+	// Not sure why we need to tell the user why their username or PW is invalid (since this isn't /register) but we'll tell them. 
 	const { error } = loginValidation(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
@@ -54,11 +49,17 @@ router.post('/login', async (req, res) => {
 	if (!passwordCorrect) return res.status(400).send('The password is incorrect.');
 
 	// Create, assign, and send the JSON web token. 
-	const token = jwt.sign({ username }, process.env.TOKEN_SECRET);
-	res.header('auth-token', token).send({ name: user.name, username });
+	const token = jwt.sign({ name: user.name, username }, process.env.TOKEN_SECRET);
+	res.send({ name: user.name, username, token });
 });
 
 module.exports = router;
 
-/* 1 */
-/* I should probably start writing tests for my apps. What if the saved username that we're returning isn't equal to the username in the body of the request? */
+/**
+ * %
+ * https://stackoverflow.com/a/43492093
+ * 
+ * *
+ * Update to include supplies? i.e. You must need and/or have at least one thing
+ * 
+ */
