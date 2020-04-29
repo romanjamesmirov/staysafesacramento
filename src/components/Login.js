@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import { loginUser } from '../actions/userActions';
 import { Redirect } from 'react-router-dom';
 
-class Register extends Component {
+class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			username: '',
-			password: '',
-			toPeopleList: false 
+			password: ''
 		}
 		this.onChange = this.onChange.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
@@ -20,13 +19,12 @@ class Register extends Component {
 		e.preventDefault();
 		const { username, password } = this.state;
 		this.props.loginUser({ username, password });
-		this.setState({ toPeopleList: true });
 	}
 
 	onChange({ target }) { this.setState({ [target.name]: target.value }); }
 
 	render() {
-		if (this.state.toPeopleList) return <Redirect to='/' />;
+		if (this.props.token !== '') return <Redirect to='/' />;
 
 		return (
 			<Fragment>
@@ -50,6 +48,8 @@ class Register extends Component {
 	}
 }
 
-Register.propTypes = { loginUser: PropTypes.func.isRequired };
+Login.propTypes = { loginUser: PropTypes.func.isRequired };
 
-export default connect(null, { loginUser })(Register);
+const mapStateToProps = state => ({ token: state.user.token });
+
+export default connect(mapStateToProps, { loginUser })(Login);

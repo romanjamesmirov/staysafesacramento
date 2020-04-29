@@ -1,11 +1,17 @@
-import React, { Fragment, Component } from 'react'
+import React, { Fragment, Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
-export default class Me extends Component {
+class Me extends Component {
 	render() {
-		return (
-			<Fragment>
-				<h1>Hello world!</h1>
-			</Fragment>
-		)
+		const { token, name } = this.props.user;
+		if (token === '') return <Redirect to='/register' />;
+		return (<Fragment>
+			<h1>{name}</h1>
+		</Fragment>);
 	}
 }
+
+const mapStateToProps = state => ({ user: state.user });
+export default connect(mapStateToProps)(Me);

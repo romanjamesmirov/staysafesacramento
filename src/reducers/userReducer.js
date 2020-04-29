@@ -1,6 +1,6 @@
 import { REGISTER_USER, LOGIN_USER, GET_USERS } from '../actions/types';
 
-const initialState = {
+export const initialState = {
 	name: '',
 	username: '',
 	have: [],

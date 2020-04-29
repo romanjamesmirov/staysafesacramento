@@ -14,8 +14,7 @@ class Register extends Component {
 			username: '',
 			password: '',
 			have: { ...allSuppliesObj },
-			need: { ...allSuppliesObj },
-			toPeopleList: false //@
+			need: { ...allSuppliesObj }
 		}
 		this.onChange = this.onChange.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
@@ -27,7 +26,6 @@ class Register extends Component {
 		this.props.registerUser(
 			{ name, username, password, have: objToArr(have), need: objToArr(need) }
 		);
-		this.setState({ toPeopleList: true });
 	}
 
 	onChange({ target }) {
@@ -36,12 +34,12 @@ class Register extends Component {
 			const supply = target.id.split('_').slice(2).join(' ');
 			value = { ...this.state[target.name] };
 			value[supply] = target.checked;
-		} 
+		}
 		this.setState({ [target.name]: value });
 	}
 
 	render() {
-		if (this.state.toPeopleList) return <Redirect to='/' />;
+		if (this.props.token !== '') return <Redirect to='/' />; //@ 
 
 		return (
 			<Fragment>
@@ -77,8 +75,8 @@ class Register extends Component {
 }
 
 Register.propTypes = { registerUser: PropTypes.func.isRequired };
-
-export default connect(null, { registerUser })(Register);
+const mapStateToProps = state => ({ token: state.user.token });
+export default connect(mapStateToProps, { registerUser })(Register);
 
 function checkboxList(group, state, onChange) { // group === 'have' or 'need'
 	let checkboxes = [];
@@ -99,4 +97,4 @@ function checkboxList(group, state, onChange) { // group === 'have' or 'need'
 
 //! https://www.freecodecamp.org/news/redux-get-the-ball-rolling-in-10min-9d9551ff4b3c/ I get it now. Reducers are the middleman between state and actions. Actions have the goal of changing state, like setState. But the store is read-only. Neither actions nor reducers update state. Instead, reducers return a new state based on the current state and the action's payload. So the app isn't based on state. It's based on the reducers. 
 
-//@. https://tylermcginnis.com/react-router-programmatically-navigate/
+//@. https://tylermcginnis.com/react-router-programmatically-navigate/ I just combined it with redux. If login or registration is successful, I call the REDIRECT dispatch type in userReducers.
