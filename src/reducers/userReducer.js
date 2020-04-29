@@ -6,7 +6,8 @@ export const initialState = {
 	have: [],
 	need: [],
 	token: '',
-	allUsers: []
+	allUsers: [],
+	loadedAllUsers: false
 };
 
 export default function (state = initialState, action) {
@@ -16,7 +17,7 @@ export default function (state = initialState, action) {
 			const { name, username, have, need, token } = action.payload;
 			return { ...state, name, username, have, need, token };
 		case GET_USERS:
-			return { ...state, allUsers: action.payload };
+			return { ...state, allUsers: action.payload, loadedAllUsers: true };
 		default:
 			return state;
 	}

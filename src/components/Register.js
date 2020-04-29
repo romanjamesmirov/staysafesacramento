@@ -2,8 +2,8 @@ import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { registerUser } from '../actions/userActions'; //!
-import { Redirect } from 'react-router-dom';
-import { Supplycon, allSuppliesObj, objToArr } from './supplyMethods';
+import { Redirect, Link } from 'react-router-dom';
+import { Supplycon, allSuppliesObj, objToArr } from './supplycon';
 import '../static/styles/Register.css';
 
 class Register extends Component {
@@ -43,6 +43,10 @@ class Register extends Component {
 
 		return (
 			<Fragment>
+				<div>
+					<Link to='/'>X</Link>
+					<Link to='/login'>Login</Link>
+				</div>
 				<h1>Register</h1>
 
 				<form action="#" onSubmit={this.onSubmit}>

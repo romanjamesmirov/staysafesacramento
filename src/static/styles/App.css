@@ -91,7 +91,8 @@ li {
 	padding-left: 2rem;
 }
 
-img {
+svg {
 	width: 1.4em;
+	height: auto;
 	margin: 0 auto;
 }

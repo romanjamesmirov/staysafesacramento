@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loginUser } from '../actions/userActions';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 class Login extends Component {
 	constructor(props) {
@@ -28,6 +28,10 @@ class Login extends Component {
 
 		return (
 			<Fragment>
+				<div>
+					<Link to='/'>X</Link>
+					<Link to='/register'>Register</Link>
+				</div>
 				<h1>Login</h1>
 
 				<form action="#" onSubmit={this.onSubmit}>
