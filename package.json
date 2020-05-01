@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "client": "react-scripts start",
+    "client": "HTTPS=true SSL_CRT_FILE=cert/server.crt SSL_KEY_FILE=cert/server.key react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

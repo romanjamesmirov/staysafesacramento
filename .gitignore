@@ -11,6 +11,9 @@
 # production
 /build
 
+# development certs
+/cert
+
 # misc
 .DS_Store
 request.rest

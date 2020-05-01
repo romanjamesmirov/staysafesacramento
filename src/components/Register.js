@@ -76,6 +76,6 @@ Register.propTypes = { authRegister: PropTypes.func.isRequired };
 const mapStateToProps = state => ({ token: state.data.token });
 export default connect(mapStateToProps, { authRegister })(Register);
 
-//! https://www.freecodecamp.org/news/redux-get-the-ball-rolling-in-10min-9d9551ff4b3c/ I get it now. Reducers are the middleman between state and actions. Actions have the goal of changing state, like setState. But the store is read-only. Neither actions nor reducers update state. Instead, reducers return a new state based on the current state and the action's payload. So the app isn't based on state. It's based on the reducers. 
+//! freecodecamp.org/news/9d9551ff4b3c I get it now. Reducers are the middleman between state and actions. Actions have the goal of changing state, like setState. But the store is read-only. Neither actions nor reducers update state. Instead, reducers return a new state based on the current state and the action's payload. So the app isn't based on state. It's based on the reducers. 
 
-//@. https://tylermcginnis.com/react-router-programmatically-navigate/ I just combined it with redux. If login or registration is successful, I call the REDIRECT dispatch type in userReducers.
+//@. tylermcginnis.com/react-router-programmatically-navigate I just combined it with redux. If login or registration is successful, I call the REDIRECT dispatch type in userReducers.

@@ -59,5 +59,5 @@ const mapStateToProps = state => ({ //%
 });
 export default connect(mapStateToProps, { fetchAllUsers })(Users); 
 
-//$ https://tylermcginnis.com/react-router-pass-props-to-link
-//% https://react-redux.js.org/using-react-redux/connect-mapstate
+//$ tylermcginnis.com/react-router-pass-props-to-link
+//% react-redux.js.org/using-react-redux/connect-mapstate

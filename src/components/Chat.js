@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import io from 'socket.io-client';
 import { Supplycons } from './supplycon';
 
@@ -12,22 +12,33 @@ class Chat extends Component {
 		this.onChange = this.onChange.bind(this);
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		const { username } = this.props.match.params; //^
 		const recipient = findWhere(this.props.allUsers, user => user.username === username);
-		if (recipient === null) { /* FETCH */ }
+		if (recipient.name === undefined) { 
+			try { 
+				const res = await fetch(`https://localhost:5000/api/users/${username}`);
+				if (res.status === 200) {
+					const recipient = await res.json();
+					this.setState({ recipient });
+				} else {
+					const body = await res.text();
+					this.setState({ recipient: null });
+				}
+			} catch (error) { console.error(error); }
+		}
 		else this.setState({ recipient });
-		
-		this.socket = io('http://192.168.1.37:5000');
+
+		// this.socket = io('https://localhost:5000');
 		// handle an emitted chat message from the server
-		this.socket.on('chat message', msg => {
-			this.setState(state => ({ messages: [...this.state.messages, msg] }));
-		});
+		// this.socket.on('chat message', msg => {
+		// 	this.setState(state => ({ messages: [...this.state.messages, msg] }));
+		// });
 	}
 
 	onSubmit(e) { // emit a chat message from this socket to the server
 		e.preventDefault();
-		this.socket.emit('chat message', this.state.newMsg);
+		// this.socket.emit('chat message', this.state.newMsg);
 		this.setState({ newMsg: '' });
 	}
 
@@ -39,6 +50,9 @@ class Chat extends Component {
 		if (recipient === null) return <h1>404 Not found</h1>;
 		if (recipient.name === undefined) return <h1>Loading...</h1>;
 		return (<Fragment>
+			<div>
+				<Link to='/'>X</Link>
+			</div>
 			<h1>{recipient.username}</h1>
 			{Supplycons(recipient.have)}
 			<ul>{messages.map((msg, i) => <li key={i}>{msg}</li>)}</ul>
@@ -57,7 +71,7 @@ const mapStateToProps = state => ({
 });
 export default connect(mapStateToProps)(Chat);
 
-//^ https://tylermcginnis.com/react-router-url-parameters/ 
+//^ tylermcginnis.com/react-router-url-parameters
 
 // IF TOKEN IS EMPTY IN REDUX STATE, REDIRECT. 
 // IF NOT FOUND, IF LOADED ALL USERS, FIND USER IN ALL USERS IN REDUX. 
@@ -67,5 +81,5 @@ export default connect(mapStateToProps)(Chat);
 function findWhere(arr, callback) {
 	if (arr.length === 0) return {};
 	const thisIsIt = callback(arr[0]);
-	return thisIsIt ? arr[0] : findWhere(arr.splice(1), callback);
+	return thisIsIt ? arr[0] : findWhere(arr.slice(1), callback);
 }
