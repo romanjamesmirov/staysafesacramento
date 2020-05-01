@@ -1,11 +1,10 @@
 import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 
 class Me extends Component {
 	render() {
-		const { token, name } = this.props.user;
+		const { token, name } = this.props;
 		if (token === '') return <Redirect to='/register' />;
 		return (<Fragment>
 			<div>
@@ -17,5 +16,5 @@ class Me extends Component {
 	}
 }
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = state => ({ username: state.data.username, token: state.data.token });
 export default connect(mapStateToProps)(Me);

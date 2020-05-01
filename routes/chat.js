@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const verifyToken = require('./verifyToken');
-const Room = require('../models/Room');
+const Chat = require('../models/Chat');
 const User = require('../models/User');
 
 /*

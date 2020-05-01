@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 export const allSuppliesObj = {
 	'Face masks': false,
@@ -39,6 +39,23 @@ export function Supplycons(supplies) {
 			})
 		}</ul>
 	);
+}
+
+export function checkboxList(group, that) { // group === 'have' or 'need'
+	let checkboxes = [];
+	for (let supply in allSuppliesObj) {
+		if (!allSuppliesObj.hasOwnProperty(supply)) continue;
+		const id = `id_${group}_${supply.split(' ').join('_')}`;
+		const checked = that.state[group][supply];
+		checkboxes.push((
+			<Fragment key={checkboxes.length}>
+				<label className={checked ? 'checked' : 'unchecked'} htmlFor={id}>{Supplycon(supply)}</label>
+				<input type="checkbox" id={id} name={group}
+					checked={checked} onChange={that.onChange} />
+			</Fragment>
+		));
+	}
+	return checkboxes;
 }
 
 export function Supplycon(supply) {

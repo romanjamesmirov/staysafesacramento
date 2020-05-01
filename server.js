@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(require('cors')({ origin: 'http://192.168.1.37:3000', optionsSuccessStatus: 200 }));
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/rooms', require('./routes/rooms'));
+app.use('/api/chat', require('./routes/chat'));
 app.use('/api/users', require('./routes/users'));
 const server = app.listen(5000); // stackoverflow.com/a/49833178
 

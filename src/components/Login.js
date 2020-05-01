@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { loginUser } from '../actions/userActions';
+import { authLogin } from '../actions';
 import { Redirect, Link } from 'react-router-dom';
 
 class Login extends Component {
@@ -18,7 +18,7 @@ class Login extends Component {
 	onSubmit(e) {
 		e.preventDefault();
 		const { username, password } = this.state;
-		this.props.loginUser({ username, password });
+		this.props.authLogin({ username, password });
 	}
 
 	onChange({ target }) { this.setState({ [target.name]: target.value }); }
@@ -52,8 +52,6 @@ class Login extends Component {
 	}
 }
 
-Login.propTypes = { loginUser: PropTypes.func.isRequired };
-
-const mapStateToProps = state => ({ token: state.user.token });
-
-export default connect(mapStateToProps, { loginUser })(Login);
+Login.propTypes = { authLogin: PropTypes.func.isRequired };
+const mapStateToProps = state => ({ token: state.data.token });
+export default connect(mapStateToProps, { authLogin })(Login);
