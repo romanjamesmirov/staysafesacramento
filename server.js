@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(require('cors')({ origin: 'https://localhost:3000', optionsSuccessStatus: 200 }));
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/chat', require('./routes/chat'));
+app.use('/api/chatroom', require('./routes/chatroom'));
 app.use('/api/users', require('./routes/users'));
 https.createServer({
 	key: fs.readFileSync(path.resolve('cert/server.key')),

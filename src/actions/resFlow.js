@@ -20,6 +20,7 @@ export default async function resFlow(URL, dispatch, TYPE, formData) { // 1
 					username: formData.username || body.username,
 					have: formData.have || body.have,
 					need: formData.need || body.need, 
+					connections: body.connections || [],
 					updates: body.updates || [],
 					token: body.token,
 				} 
@@ -32,11 +33,7 @@ export default async function resFlow(URL, dispatch, TYPE, formData) { // 1
 }
 
 // 1. The response flow. What do you do with a response from the server for registering or logging in? Or loading all users? 
-
-// 2. First, fetch. It's obviously a POST if you have form data (from /login or /register). 
-
-// 3. Second, the server always passes JSON if it's a 200. If not, it's an error message, so console.error the text.  
-
-// 4. Third, if we are loading all users, the response body is an array. If we are POSTing, the response body is an object holding data about the user. 
-
+// 2. Fetch first. It's obviously a POST if you have form data (from /login or /register). 
+// 3. The server always passes JSON if it's a 200. If not, it's an error message, so console.error the text.  
+// 4. If we are loading all users, the response body is an array. If we are POSTing, the response body is an object holding data about the user. 
 // 5. If we came from /register, the form contains all the user data and the server will just send back a JWT. If we came from /login, the form only contains the username and the server will send us the rest. Hence the double pipes. Either pull from the form or from the body. Minimize data packet size. 

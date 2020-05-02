@@ -15,7 +15,7 @@ router.post('/register', async (req, res) => {
 	try {
 		const savedUser = await user.save();
 		const token = jwt.sign({ username }, process.env.TOKEN_SECRET); // 4
-		res.json({ token }); // @
+		res.json({ token }); //R1
 	} catch (error) { res.status(400).send(error); }
 });
 
@@ -28,8 +28,8 @@ router.post('/login', async (req, res) => {
 	const passwordCorrect = await bcrypt.compare(password, user.password); // 3
 	if (!passwordCorrect) return res.status(400).send('The password is incorrect.');
 	const token = jwt.sign({ username }, process.env.TOKEN_SECRET); 
-	const { name, have, need, updates } = user;
-	res.json({ name, have, need, updates, token });
+	const { name, have, need, connections, updates } = user;
+	res.json({ name, have, need, connections, updates, token });
 });
 
 module.exports = router;
@@ -47,4 +47,4 @@ module.exports = router;
 // 3. Return an error message if the user exists but the password is incorrect.
 
 // RESOURCES
-// @ In requests and responses, where do you put the token? – https://stackoverflow.com/a/43492093
+// R1. In requests and responses, where do you put the token? – https://stackoverflow.com/a/43492093
