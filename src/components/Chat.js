@@ -9,7 +9,7 @@ class Chat extends Component {
 		super(props);
 		this.state = {
 			'404': false, // No user with :username found.
-			recipient: {},
+			recipient: { name: '', need: [], have: [] },
 			'401': false, // Unauthorized to load a chatroom. 
 			chatroom: [],
 			newMsg: '',
@@ -62,26 +62,26 @@ class Chat extends Component {
 
 	onSubmit(e) { // This is where the magic happens. 
 		e.preventDefault();
-		// this.socket = io('https://localhost:5000');
+		const { messages, newMsg } = this.state;
+		this.setState({ messages: [...messages, newMsg], newMsg: '' });
+		this.socket = io('https://localhost:5000');
 		// handle an emitted chat message from the server
-		// this.socket.on('chat message', msg => {
-		// 	this.setState(state => ({ messages: [...this.state.messages, msg] }));
-		// });
+		this.socket.on('chat message', msg => {
+			this.setState(state => ({ messages: [...this.state.messages, msg] }));
+		});
 		if (this.state.loadedRecipient && )
 		// this.socket.emit('chat message', this.state.newMsg);
-		this.setState({ newMsg: '' });
 	}
 
 	onChange({ target }) { this.setState({ newMsg: target.value }); }
 
 	render() {
-		const { recipient, loadedRecipient, messages, newMsg } = this.state;
-		if (!loadedRecipient) return <h1>Loading...</h1>;
-		else if (this.props.token === '') return <Redirect to='/register' />;
-		if (recipient === null) return (<Fragment>
+		const { recipient, messages, newMsg } = this.state;
+		if (this.state['404']) return (<Fragment>
 			<div><Link to='/'>X</Link></div>
 			<h1>404 Not found</h1>
 		</Fragment>);
+		if (this.state['401']) return <Redirect to='/register' />;
 		return (<Fragment>
 			<div><Link to='/'>X</Link></div>
 			<h1>{recipient.name}</h1>
