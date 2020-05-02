@@ -64,13 +64,14 @@ class Chat extends Component {
 		e.preventDefault();
 		const { messages, newMsg } = this.state;
 		this.setState({ messages: [...messages, newMsg], newMsg: '' });
-		this.socket = io('https://localhost:5000');
-		// handle an emitted chat message from the server
-		this.socket.on('chat message', msg => {
-			this.setState(state => ({ messages: [...this.state.messages, msg] }));
-		});
-		if (this.state.loadedRecipient && )
-		// this.socket.emit('chat message', this.state.newMsg);
+		if (this.socket === undefined) {
+			this.socket = io('https://localhost:5000');
+			this.socket.emit('join room', this.state.chatroom.id);
+			this.socket.on('new message', msg => {
+				this.setState(state => ({ messages: [...state.messages, msg] }));
+			});
+		}
+		this.socket.emit('chat message', { token: this.props.token, newMsg });
 	}
 
 	onChange({ target }) { this.setState({ newMsg: target.value }); }
