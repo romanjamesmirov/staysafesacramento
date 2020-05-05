@@ -5,6 +5,7 @@ const initialState = {
 	username: '',
 	have: [],
 	need: [],
+	connections: [],
 	updates: [],
 	token: '',
 	allUsers: [],
@@ -15,8 +16,7 @@ export default function (state = initialState, action) {
 	switch (action.type) {
 		case AUTH_REGISTER:
 		case AUTH_LOGIN:
-			const { name, username, have, need, updates, token } = action.payload;
-			return { ...state, name, username, have, need, updates, token };
+			return { ...state, ...action.payload };
 		case FETCH_ALL_USERS:
 			return { ...state, allUsers: action.payload, fetchedAllUsers: true };
 		default:

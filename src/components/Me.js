@@ -4,7 +4,6 @@ import { Redirect, Link } from 'react-router-dom';
 
 class Me extends Component {
 	render() {
-		return <Redirect to='/dude' />;
 		const { token, name } = this.props;
 		if (token === '') return <Redirect to='/register' />;
 		return (<Fragment>

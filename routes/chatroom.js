@@ -3,7 +3,7 @@ const verifyToken = require('./verifyToken');
 const Chatroom = require('../models/Chatroom');
 const User = require('../models/User');
 
-router.post('/:username', verifyToken, async (req, res) => {
+router.get('/:username', verifyToken, async (req, res) => {
 	const { username } = req.params;
 	const recipient = await User.findOne({ username });
 

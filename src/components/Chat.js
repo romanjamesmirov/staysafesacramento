@@ -20,14 +20,14 @@ class Chat extends Component {
 
 	async componentDidMount() { // Get past Outcome A (see end comments).
 		const { username } = this.props.match.params; //R1
-		const { allUsers, loadedAllUsers } = this.props;
-		if (loadedAllUsers) { 
+		const { allUsers, fetchedAllUsers } = this.props;
+		if (fetchedAllUsers) { 
 			const recipient = findWhere(allUsers, user => user.username === username);
 			if (recipient === null) this.setState({ '404': true }); 
 			else this.setState({ recipient }, this.ok);
 		} else {
 			try { 
-				const res = await fetch(`https://localhost:5000/api/users/${username}`);
+				const res = await fetch(`/api/users/${username}`);
 				if (res.status !== 200) this.setState({ '404': true });
 				else {
 					const recipient = await res.json();
@@ -37,14 +37,14 @@ class Chat extends Component {
 		}
 	}
 	
-	ok() { // Get past Outcome B and C. 
+	async ok() { // Get past Outcome B and C. 
 		const { token, connections } = this.props;
 		const { username } = this.state.recipient;
 		if (token === '') this.setState({ '401': true }); 
 		else { 
 			if (findWhere(connections, user => user.username === username) !== null) {
 				try {
-					const res = await fetch(`https://localhost:5000/api/chatroom/${username}`, {
+					const res = await fetch(`/api/chatroom/${username}`, {
 						method: 'GET',
 						headers: { 'Authorization': `Bearer ${token}` }
 					});
@@ -62,13 +62,13 @@ class Chat extends Component {
 
 	onSubmit(e) { // This is where the magic happens. 
 		e.preventDefault();
-		const { messages, newMsg } = this.state;
-		this.setState({ messages: [...messages, newMsg], newMsg: '' });
+		const { chatroom, newMsg } = this.state;
+		this.setState({ chatroom: [...chatroom, newMsg], newMsg: '' });
 		if (this.socket === undefined) {
 			this.socket = io('https://localhost:5000');
 			this.socket.emit('join room', this.state.chatroom.id);
 			this.socket.on('new message', msg => {
-				this.setState(state => ({ messages: [...state.messages, msg] }));
+				this.setState(state => ({ chatroom: [...state.chatroom, msg] }));
 			});
 		}
 		this.socket.emit('chat message', { token: this.props.token, newMsg });
@@ -76,8 +76,12 @@ class Chat extends Component {
 
 	onChange({ target }) { this.setState({ newMsg: target.value }); }
 
+	componentWillUnmount() {
+		if (this.socket !== undefined) this.socket.emit('disconnect');
+	}
+
 	render() {
-		const { recipient, messages, newMsg } = this.state;
+		const { recipient, chatroom, newMsg } = this.state;
 		if (this.state['404']) return (<Fragment>
 			<div><Link to='/'>X</Link></div>
 			<h1>404 Not found</h1>
@@ -88,7 +92,7 @@ class Chat extends Component {
 			<h1>{recipient.name}</h1>
 			<div><span>Needs: </span>{Supplycons(recipient.need)}</div>
 			<div><span>Has: </span>{Supplycons(recipient.have)}</div>
-			<ul>{messages.map((msg, i) => <li key={i}>{msg}</li>)}</ul>
+			<ul>{chatroom.map((msg, i) => <li key={i}>{msg}</li>)}</ul>
 			<form onSubmit={this.onSubmit}>
 				<textarea value={newMsg} onChange={this.onChange} />
 				<button type='submit'>Send</button>
@@ -97,11 +101,10 @@ class Chat extends Component {
 	}
 };
 
-const mapStateToProps = state => ({
-	token: state.data.token,
-	fetchedAllUsers: state.data.fetchedAllUsers,
-	allUsers: state.data.allUsers
-});
+const mapStateToProps = state => {
+	const { connections, token, allUsers, fetchedAllUsers } = state.data;
+	return { connections, token, allUsers, fetchedAllUsers };
+};
 export default connect(mapStateToProps)(Chat);
 
 // RESOURCES
@@ -109,7 +112,7 @@ export default connect(mapStateToProps)(Chat);
 
 // CUSTOM FINDWHERE RECURSION BABY.
 function findWhere(arr, callback) {
-	if (arr.length === 0) return {};
+	if (arr.length === 0) return null;
 	const thisIsIt = callback(arr[0]);
 	return thisIsIt ? arr[0] : findWhere(arr.slice(1), callback);
 }

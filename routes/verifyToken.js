@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // Middleware function you can add to any route you want to be protected (private), or accessible only to users who have logged in and thus have a verifiable token. 
-module.exports = function (req, res, next) {
+function verifyToken(req, res, next) {
 	// Forbidden if request is without the "Authorization: Bearer [token]" header.
 	const token = req.header('Authorization');
 	if (!token) return res.status(401).send('Access denied.'); //R1
@@ -15,6 +15,8 @@ module.exports = function (req, res, next) {
 		res.status(403).send('Invalid token'); //R2
 	}
 }
+
+module.exports = verifyToken;
 
 // RESOURCES
 // R1. webmasters.stackexchange.com/a/90656
