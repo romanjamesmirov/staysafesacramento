@@ -1,4 +1,4 @@
-import { AUTH_REGISTER, AUTH_LOGIN, FETCH_ALL_USERS } from '../actions/types';
+import { AUTH_REGISTER, AUTH_LOGIN, FETCH_ALL_USERS } from './types';
 
 const initialState = {
 	name: '',

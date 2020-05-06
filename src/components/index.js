@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux'; 
 import PropTypes from 'prop-types';
-import { fetchAllUsers } from '../actions';
+import { fetchAllUsers } from '../redux/actions';
 import { Link } from 'react-router-dom';
 import { Supplycons } from './supplycon';
 import Me from '../static/icons/me.svg';

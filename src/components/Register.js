@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { authRegister } from '../actions'; //!
+import { authRegister } from '../redux/actions'; //!
 import { Redirect, Link } from 'react-router-dom';
 import { checkboxList, allSuppliesObj, objToArr } from './supplycon';
 import '../static/styles/Register.css';

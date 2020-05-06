@@ -65,7 +65,7 @@ class Chat extends Component {
 		const { chatroom, newMsg } = this.state;
 		this.setState({ chatroom: [...chatroom, newMsg], newMsg: '' });
 		if (this.socket === undefined) {
-			this.socket = io('https://localhost:5000');
+			this.socket = io('http://localhost:5000');
 			this.socket.emit('join room', this.state.chatroom.id);
 			this.socket.on('new message', msg => {
 				this.setState(state => ({ chatroom: [...state.chatroom, msg] }));

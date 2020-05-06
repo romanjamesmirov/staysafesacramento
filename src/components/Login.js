@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { authLogin } from '../actions';
+import { authLogin } from '../redux/actions';
 import { Redirect, Link } from 'react-router-dom';
 
 class Login extends Component {
