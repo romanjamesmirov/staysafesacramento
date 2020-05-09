@@ -18,15 +18,20 @@ class Chat extends Component {
 		this.onChange = this.onChange.bind(this);
 	}
 
-	async componentDidMount() { // Get past Outcome A (see end comments).
-		const { username } = this.props.match.params; //R1
+	// Outcome A: Display a Not Found instead of the chatroom. You show this message if either...
+	async componentDidMount() {
+		const { username } = this.props.match.params; // Router GET parameters. 
 		const { allUsers, fetchedAllUsers } = this.props;
-		if (fetchedAllUsers) { 
-			const recipient = findWhere(allUsers, user => user.username === username);
-			if (recipient === null) this.setState({ '404': true }); 
+
+		// ...redux loaded all users and :username is not a username of any user in the redux all users array or...
+		if (fetchedAllUsers) {
+			const recipient = findBy(allUsers, { username });
+			if (recipient === null) this.setState({ '404': true });
 			else this.setState({ recipient }, this.ok);
 		} else {
-			try { 
+
+			// ...redux did not load all users and fetching /api/users/:username returns a 404. 
+			try {
 				const res = await fetch(`/api/users/${username}`);
 				if (res.status !== 200) this.setState({ '404': true });
 				else {
@@ -36,13 +41,18 @@ class Chat extends Component {
 			} catch (error) { console.error(error); }
 		}
 	}
-	
-	async ok() { // Get past Outcome B and C. 
+
+	// If we got past Outcome A, ok() – for 200 OK – was called. 
+	async ok() {
 		const { token, connections } = this.props;
 		const { username } = this.state.recipient;
-		if (token === '') this.setState({ '401': true }); 
-		else { 
-			if (findWhere(connections, user => user.username === username) !== null) {
+
+		// Outcome B is to display the register form instead of the chatroom, with a message telling the user to register if they want to talk to :username. If the user is not logged in. 
+		if (token === '') this.setState({ '401': true });
+
+		// Outcome C is to display the chatroom. If they've talked before, the recipient will be in the sender's connections array in redux. If :username is in the redux connections array, fetch /api/chatroom/:username to load the previous chats...
+		else {
+			if (findBy(connections, { username }) !== null) {
 				try {
 					const res = await fetch(`/api/chatroom/${username}`, {
 						method: 'GET',
@@ -60,31 +70,36 @@ class Chat extends Component {
 		}
 	}
 
-	onSubmit(e) { // This is where the magic happens. 
+	// ...If :username is not in the connections array, don't fetch. Either way, proceed to wait for the submission of a message. 
+	onSubmit(e) {
 		e.preventDefault();
-		const { chatroom, newMsg } = this.state;
+		const { chatroom, newMsg, recipient } = this.state;
 		this.setState({ chatroom: [...chatroom, newMsg], newMsg: '' });
+
+		// If a socket connection is not already open, open one...
 		if (this.socket === undefined) {
-			this.socket = io('http://localhost:5000');
-			this.socket.emit('join room', this.state.chatroom.id);
-			this.socket.on('new message', msg => {
+			this.socket = io('/', { query: { token: this.props.token } });
+			// this.socket.emit('join chatroom', 'hey' /* this.state.chatroom.id */);
+			this.socket.on('user message', msg => {
 				this.setState(state => ({ chatroom: [...state.chatroom, msg] }));
 			});
 		}
-		this.socket.emit('chat message', { token: this.props.token, newMsg });
+
+		// ...If it is open, emit the message. 
+		this.socket.emit('user message', newMsg);
 	}
 
 	onChange({ target }) { this.setState({ newMsg: target.value }); }
 
 	componentWillUnmount() {
-		if (this.socket !== undefined) this.socket.emit('disconnect');
+		if (this.socket !== undefined) this.socket.close();
 	}
 
 	render() {
 		const { recipient, chatroom, newMsg } = this.state;
 		if (this.state['404']) return (<Fragment>
 			<div><Link to='/'>X</Link></div>
-			<h1>404 Not found</h1>
+			<h1>Nobody has the username <i>{this.props.match.params.username}</i>.</h1>
 		</Fragment>);
 		if (this.state['401']) return <Redirect to='/register' />;
 		return (<Fragment>
@@ -101,23 +116,20 @@ class Chat extends Component {
 	}
 };
 
+function findBy(arr, vals) { // MY CUSTOM RECURSIVE FUNCTION 
+	if (arr.length === 0) return null; // ...to find in an array
+	for (let key in Object.keys(vals)) {
+		if (vals[key] !== arr[0][key]) return findBy(arr.slice(1), vals);
+	} // ...of objects
+	return arr[0]; // ...an object with matching key values. 
+}
+
 const mapStateToProps = state => {
 	const { connections, token, allUsers, fetchedAllUsers } = state.data;
 	return { connections, token, allUsers, fetchedAllUsers };
 };
+
 export default connect(mapStateToProps)(Chat);
 
 // RESOURCES
-// R1. tylermcginnis.com/react-router-url-parameters
-
-// CUSTOM FINDWHERE RECURSION BABY.
-function findWhere(arr, callback) {
-	if (arr.length === 0) return null;
-	const thisIsIt = callback(arr[0]);
-	return thisIsIt ? arr[0] : findWhere(arr.slice(1), callback);
-}
-
-// CHATROOM FLOW
-// Outcome A: Display a "404 [username] not found" instead of the chatroom. You show this message if A) redux loaded all users and :username does not exist in redux all users array or B) if all users were not loaded and you fetch /api/users/:username and the response is a 404. 
-// Outcome B: Display the register form instead of the chatroom with the message "Register if you want to talk to [username]." You show this message and form if A) all users have been loaded and the username belongs to somebody but the requester is not logged in or B) all users have not been loaded and the fetch /api/users/:username is a 200 but the requester is not logged in. 
-// Outcome C: Display the chatroom. You do this if the requester is logged in and the username is valid. If the username is in the requester's connections array in redux, fetch /api/chatroom/:username. If the username is not in the connections array, don't fetch. Either way, proceed to wait for the submission of a message. If a socket connection is not already open, open one. If it is open, emit the message. 
+// tylermcginnis.com/react-router-url-parameters

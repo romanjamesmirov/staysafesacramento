@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { v4 } = require('uuid');
 
 const chatroomSchema = new mongoose.Schema({
-	id: {
+	name: {
 		type: String,
 		default: v4()
 	},

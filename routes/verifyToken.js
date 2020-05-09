@@ -1,23 +1,26 @@
+// If you want to protect a route, or make it private, add this middleware function to check if the user is authorized. 
 const jwt = require('jsonwebtoken');
-
-// Middleware function you can add to any route you want to be protected (private), or accessible only to users who have logged in and thus have a verifiable token. 
 function verifyToken(req, res, next) {
-	// Forbidden if request is without the "Authorization: Bearer [token]" header.
-	const token = req.header('Authorization');
-	if (!token) return res.status(401).send('Access denied.'); //R1
 
-	// Handle case where token is valid and case where it is invalid.
+	// Unauthorized if request is without `Authorization: Bearer ${token}` header.
+	const token = req.header('Authorization');
+	if (!token) return res.status(401).send('Access denied.'); 
+
+	// If the JWT validates, we add the contained encrypted _id to req object.
 	try {
-		const verifiedUser = jwt.verify(token.slice(7), process.env.TOKEN_SECRET);
-		req.user = verifiedUser;
+		const decoded = jwt.verify(token.slice(7), process.env.TOKEN_SECRET);
+		req.sender_id = decoded._id;
 		next();
+
+	// Unauthorized if authorization header present but fails. #R3
 	} catch (error) {
-		res.status(403).send('Invalid token'); //R2
+		res.status(403).send('Invalid token'); //R3
 	}
 }
 
 module.exports = verifyToken;
 
 // RESOURCES
-// R1. webmasters.stackexchange.com/a/90656
-// R2. Why not return res? stackoverflow.com/q/52919585
+// #R1 401 Unauthorized vs 403 Forbidden – stackoverflow.com/a/3297081
+// #R2 Confirmation of #R1 – webmasters.stackexchange.com/a/90656
+// #R3 Why not *return* res – stackoverflow.com/q/52919585
