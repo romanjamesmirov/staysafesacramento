@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Supplycons } from './supplycon';
 import Me from '../static/icons/me.svg';
 
-class Users extends Component {
+class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.state = { group: 'need' };

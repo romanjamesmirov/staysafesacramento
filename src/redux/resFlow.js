@@ -1,39 +1,60 @@
+// The flow. What do you do with a response from the server?
+import io from 'socket.io-client';
 import { FETCH_ALL_USERS } from './types';
+export default async function resFlow(URL, dispatch, type, formData) {
 
-export default async function resFlow(URL, dispatch, TYPE, formData) { // 1
-	try { // 2
-		let res;
-		if (!formData) res = await fetch(URL);
-		else { 
-			res = await fetch(URL, {
+	// First, fetch. If we have form data (e.g. from /login), we want it to be a POST with POST data. 
+	try {
+		const res = !formData ? await fetch(URL)
+			: await fetch(URL, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(formData)
 			});
-		}
-		if (res.status === 200) { // 3
+
+		// Our server passes JSON if it's a 200. If it's an error message, it passes plain text. 
+		if (res.status === 200) {
 			const body = await res.json();
+
+			// If we logged in, before we dispatch to the reducer our response data about the user, open up the Socket.io connection for the entire session. 
+			// const socket = io('/', { query: { token: body.token } });
+			// this.socket.emit('join chatroom', 'hey' /* this.state.chatroom.id */);
+			// this.socket.on('user message', msg => {
+				// this.setState(state => ({ chatroom: [...state.chatroom, msg] }));
+			// });
+
 			dispatch({
-				type: TYPE,
-				payload: TYPE === FETCH_ALL_USERS ? body : { // 4
-					name: formData.name || body.name, // 5
+				type,
+
+				// If we are GET fetching all users, the response body is an array with all users. 
+				payload: type === FETCH_ALL_USERS ? body : {
+
+					// Otherwise, if we are POST fetching, the response body is an object holding data about the user we just registered or logged in. 
+					name: formData.name || body.name,
 					username: formData.username || body.username,
 					have: formData.have || body.have,
-					need: formData.need || body.need, 
+					need: formData.need || body.need,
 					connections: body.connections || [],
-					updates: body.updates || [],
 					token: body.token,
-				} 
+				}
 			});
-		} else { 
-			const body = await res.text(); // 3
-			console.error(body); 
+
+			// If the res isn't json (see third comment), console.error the text. 
+		} else {
+			const body = await res.text(); 
+			console.error(body);
 		}
 	} catch (error) { console.error(error); }
 }
 
-// 1. The response flow. What do you do with a response from the server for registering or logging in? Or loading all users? 
-// 2. Fetch first. It's obviously a POST if you have form data (from /login or /register). 
-// 3. The server always passes JSON if it's a 200. If not, it's an error message, so console.error the text.  
-// 4. If we are loading all users, the response body is an array. If we are POSTing, the response body is an object holding data about the user. 
-// 5. If we came from /register, the form contains all the user data and the server will just send back a JWT. If we came from /login, the form only contains the username and the server will send us the rest. Hence the double pipes. Either pull from the form or from the body. Minimize data packet size. 
+// SIDE NOTES
+// The `||` in our payload to the reducer: If we came from /register, we can pull all the user data from the form and so the server only sends back a JWT. If we came from /login, we can only pull the username from the form and the rest of the user data the server sends back. Only send data to the client that the client doesn't already have, it's faster. Hence the `||` – we prefer the formData first, but if the property isn't on the formData object, we fall back on the response body. 
+
+/**
+ * Idea: `v === a || v === b` is almost 2x longer than `q(v, a, b)`.
+ * 
+ * function q(val, ...vals) {
+ *   if (vals.length === 0) return false;
+ *   return val === vals[0] ? true : q(val, vals.slice(1));
+ * }
+ */

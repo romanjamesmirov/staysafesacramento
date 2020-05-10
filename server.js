@@ -3,8 +3,8 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 require('mongoose').connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Fire up the server. 
-const express = require('express');
-const app = express();
+const express = require('express'),
+	app = express();
 app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
 	const path = require('path');
@@ -13,20 +13,17 @@ if (process.env.NODE_ENV === 'production') {
 			if (req.secure) next();
 			else res.redirect(`https://${req.headers.host}${req.url}`);
 		})
-		.use('/api/auth', require('./routes/auth'))
-		.use('/api/users', require('./routes/users'))
+		.use('/api', require('./api'))
 		.use(express.static(path.join(__dirname, 'build')))
 		.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'build',
 			'index.html'))); //create-react-app.dev/docs/deployment
-} else {
-	app.use('/api/auth', require('./routes/auth'))
-		.use('/api/users', require('./routes/users'));
-}
+} else app.use('/api', require('./api'));
+
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT);
 
 // Fire up the real time chat. 
-require('./socket.io.js')(server); 
+require('./socket.io')(server);
 
 // FURTHER RESOURCES
 // Redirect to https – developer.ibm.com/technologies/node-js/tutorials/make-https-the-defacto-standard
