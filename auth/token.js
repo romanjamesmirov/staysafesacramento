@@ -4,17 +4,17 @@ module.exports = (req, res, next) => {
 
 	// Unauthorized if request is without `Authorization: Bearer ${token}` header.
 	const token = req.header('Authorization');
-	if (!token) return res.status(401).send('Access denied.');
+	if (!token) return res.status(401).send('You must log in to do that');
 
 	// If the JWT validates, we add the contained encrypted _id to req object.
 	try {
 		const decoded = jwt.verify(token.slice(7), process.env.TOKEN_SECRET);
-		req.sender_id = decoded._id;
+		req.user = { _id: decoded._id, username: decoded.username };
 		next();
 
 		// Unauthorized if authorization header present but fails. #R3
 	} catch (error) {
-		res.status(403).send('Invalid token');
+		res.status(401).send('You must log in to do that');
 	}
 };
 

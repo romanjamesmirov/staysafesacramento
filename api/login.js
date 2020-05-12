@@ -22,14 +22,14 @@ module.exports = async (req, res) => {
 };
 
 // Don't send Mongo _id's of connections – replace with public user data.
-function withoutIds(users) {
+async function withoutIds(users) {
 	if (users.length === 0) return [];
 	const slice = replaceIds(users.slice(0, -1));
-	const { user_id, lastMsg } = users[users.length - 1];
+	const { user_id, hasUnread } = users[users.length - 1];
 	const user = await User.findOne({ _id: user_id });
 	if (!user) return slice;
 	const { name, username, need, have } = user;
-	return slice.concat({ name, username, need, have, lastMsg });
+	return slice.concat({ name, username, need, have, hasUnread });
 }
 
 // QUESTIONS

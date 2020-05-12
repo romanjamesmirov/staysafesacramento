@@ -1,6 +1,13 @@
-export const AUTH_REGISTER = 'AUTH_REGISTER';
-export const AUTH_LOGIN = 'AUTH_LOGIN';
+// POST
+export const REGISTER = 'REGISTER';
+export const LOGIN = 'LOGIN';
 
-export const FETCH_ALL_USERS = 'FETCH_ALL_USERS';
+// GET
+export const GET_ALL_USERS = 'GET_ALL_USERS';
 
-export const FETCH_CHAT = 'FETCH_CHAT';
+// Socket.io server-emitted events for client
+export const CHAT_LOADED = 'CHAT_LOADED';
+export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE';
+
+// Socket.io socket-emitted event for server
+export const SEND_MESSAGE = 'SEND_MESSAGE';

@@ -4,6 +4,5 @@ module.exports = async (req, res) => {
 	const userUnsafe = await User.findOne({ username });
 	if (userUnsafe === null) return res.status(404).send(`A user with the username of ${username} was not found.`);
 	const { name, have, need } = userUnsafe;
-	const userSafe = { name, have, need };
-	res.json(userSafe);
+	res.json({ name, have, need });
 };

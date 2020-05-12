@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
 	connections: { //#R1
 		type: [{
 			user_id: mongoose.ObjectId,
-			lastMsg: String // Either '' if read or not blank if unread
+			hasUnread: Boolean 
 		}], 
 		default: []
 	},

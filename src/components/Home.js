@@ -14,7 +14,7 @@ class Home extends Component {
 	}
 
 	componentDidMount() {
-		if (!this.props.fetchedAllUsers) this.props.fetchAllUsers();
+		if (!this.props.allUsers) this.props.fetchAllUsers();
 	}
 
 	onGroupClick({ target }) { this.setState({ group: target.value }); }
@@ -26,8 +26,8 @@ class Home extends Component {
 				<Link to='/me' className='Me'><img src={Me} alt='My profile' /></Link>
 				<div>{radioButton('need', this)}{radioButton('have', this)}</div>
 				<ul>{
-					this.props.allUsers.map((user, index) => {
-						if (user[group].length === 0 || user.username === this.props.username) return undefined; // Filter by group and don't show the user to themselves.
+					(this.props.allUsers || []).map((user, index) => {
+						if (user[group].length === 0) return undefined; 
 						return (
 							<li key={index} className='Person-item'>
 								<Link to={{ pathname: `/${user.username}`, state: { user } }}>
@@ -35,7 +35,7 @@ class Home extends Component {
 									{Supplycons(user[group])}
 								</Link>
 							</li>
-						); //$
+						);
 					})
 				}</ul>
 			</Fragment>
@@ -51,13 +51,12 @@ function radioButton(group, that) {
 	</div>);
 }
 
-Users.propTypes = { fetchAllUsers: PropTypes.func.isRequired };
-const mapStateToProps = state => ({ //%
-	allUsers: state.data.allUsers,
-	fetchedAllUsers: state.data.fetchedAllUsers,
-	username: state.data.username
+Home.propTypes = { fetchAllUsers: PropTypes.func.isRequired };
+const mapStateToProps = state => ({
+	allUsers: state.data.allUsers
 });
-export default connect(mapStateToProps, { fetchAllUsers })(Users); 
+export default connect(mapStateToProps, { fetchAllUsers })(Home); 
 
-//$ tylermcginnis.com/react-router-pass-props-to-link
-//% react-redux.js.org/using-react-redux/connect-mapstate
+// RESOURCES
+// #R1 – <Link>'s with props – tylermcginnis.com/react-router-pass-props-to-link
+// #R2 – mapState – react-redux.js.org/using-react-redux/connect-mapstate

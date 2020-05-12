@@ -1,7 +1,8 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { loadChat } from '../redux/actions';
 import { Redirect, Link } from 'react-router-dom';
-import io from 'socket.io-client';
 import { Supplycons } from './supplycon';
 
 class Chat extends Component {
@@ -9,7 +10,7 @@ class Chat extends Component {
 		super(props);
 		this.state = {
 			'404': false, // No user with :username found.
-			recipient: { name: '', need: [], have: [] },
+			recipient: {},
 			'401': false, // Unauthorized to load a chatroom. 
 			chatroom: [],
 			newMsg: '',
@@ -21,52 +22,47 @@ class Chat extends Component {
 	// Outcome A: Display a Not Found instead of the chatroom. You show this message if either...
 	async componentDidMount() {
 		const { username } = this.props.match.params; // Router GET parameters. 
-		const { allUsers, fetchedAllUsers } = this.props;
+		const { allUsers } = this.props;
 
 		// ...redux loaded all users and :username is not a username of any user in the redux all users array or...
-		if (fetchedAllUsers) {
+		if (!!allUsers) {
 			const recipient = findBy(allUsers, { username });
-			if (recipient === null) this.setState({ '404': true });
-			else this.setState({ recipient }, this.ok);
+			if (recipient === null) return this.setState({ '404': true });
+			this.setState({ recipient }, this.ok);
 		} else {
 
 			// ...redux did not load all users and fetching /api/users/:username returns a 404. 
 			try {
 				const res = await fetch(`/api/users/${username}`);
-				if (res.status !== 200) this.setState({ '404': true });
-				else {
-					const recipient = await res.json();
-					this.setState({ recipient }, this.ok);
-				}
+				if (res.status !== 200) return this.setState({ '404': true });
+				const recipient = await res.json();
+				this.setState({ recipient }, this.ok);
 			} catch (error) { console.error(error); }
 		}
 	}
 
-	// If we got past Outcome A, ok() – for 200 OK – was called. 
+	// If we got past Outcome A, call ok() – for 200 OK. 
 	async ok() {
 		const { token, connections } = this.props;
 		const { username } = this.state.recipient;
 
 		// Outcome B is to display the register form instead of the chatroom, with a message telling the user to register if they want to talk to :username. If the user is not logged in. 
-		if (token === '') this.setState({ '401': true });
+		if (!token) return this.setState({ '401': true });
 
 		// Outcome C is to display the chatroom. If they've talked before, the recipient will be in the sender's connections array in redux. If :username is in the redux connections array, fetch /api/chatroom/:username to load the previous chats...
-		else {
-			if (findBy(connections, { username }) !== null) {
-				try {
-					const res = await fetch(`/api/chatroom/${username}`, {
-						method: 'GET',
-						headers: { 'Authorization': `Bearer ${token}` }
-					});
-					if (res.status !== 200) {
-						const error = await res.text();
-						console.error(error);
-					} else {
-						const chatroom = await res.json();
-						this.setState({ chatroom });
-					}
-				} catch (error) { console.error(error); }
-			}
+		if (findBy(connections, { username }) !== null) {
+			this.props.
+			this.props.socket.emit('subscribe', this.props.match.params.username);
+			try {
+
+				if (res.status !== 200) {
+					const error = await res.text();
+					console.error(error);
+				} else {
+					const chatroom = await res.json();
+					this.setState({ chatroom });
+				}
+			} catch (error) { console.error(error); }
 		}
 	}
 
@@ -124,12 +120,12 @@ function findBy(arr, vals) { // MY CUSTOM RECURSIVE FUNCTION
 	return arr[0]; // ...an object with matching key values. 
 }
 
+Chat.propTypes = { loadChat: PropTypes.func.isRequired };
 const mapStateToProps = state => {
-	const { connections, token, allUsers, fetchedAllUsers } = state.data;
-	return { connections, token, allUsers, fetchedAllUsers };
+	const { allUsers, token, connections, socket } = state.data;
+	return { allUsers, token, connections, socket };
 };
-
-export default connect(mapStateToProps)(Chat);
+export default connect(mapStateToProps, { loadChat })(Chat);
 
 // RESOURCES
 // tylermcginnis.com/react-router-url-parameters
