@@ -5,7 +5,7 @@ const chatSchema = new mongoose.Schema({
 		type: [mongoose.ObjectId],
 		required: true
 	},
-	history: {
+	pastMessages: {
 		type: [{
 			from: Number, // Index of chat.users 
 			when: Date,

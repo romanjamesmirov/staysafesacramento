@@ -1,26 +1,48 @@
-import { REGISTER, LOGIN, GET_ALL_USERS, CHAT_LOADED, RECEIVE_MESSAGE, SEND_MESSAGE } from './types';
 import store from './store';
-import resFlow from './resFlow';
+import authenticate from './authenticate';
 
-export const register = userData => dispatch =>
-	resFlow('/api/register', dispatch, REGISTER, userData);
+// types
+export const REGISTER = 'REGISTER'; 
+export const LOGIN = 'LOGIN';
+export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const GET_CONTACTS = 'GET_CONTACTS';
+export const CHAT_LOADED = 'CHAT_LOADED'; 
+export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE'; 
+export const SEND_MESSAGE = 'SEND_MESSAGE'; 
 
-export const login = userData => dispatch =>
-	resFlow('/api/login', dispatch, LOGIN, userData);
+// POST actions – authentication
+export const register = formData => dispatch => authenticate(REGISTER, dispatch, formData);
+export const login = formData => dispatch => authenticate(LOGIN, dispatch, formData);
 
-export const getAllUsers = () => dispatch =>
-	resFlow('/api/users', dispatch, GET_ALL_USERS);
+// GET actions – users
+export const getAllUsers = () => dispatch => {
+	try {
+		const res = await fetch('/api/users');
+		const payload = res.status === 200 ? await res.json() : await res.text();
+		if (res.status === 200) return dispatch({ type: GET_ALL_USERS, payload });
+		console.error(payload);
+	} catch (error) { console.error(error); }
+}
+export const getContacts = contacts => dispatch => {
+	const usernames = contacts.map(contact => contact.username);
+	const URL = `/api/users?${contacts.map((username, index) => `&${index}=${username}`).join('').slice(1)}`;
+	try { 
+		const res = await fetch(URL);
+		const payload = res.status === 200 ? await res.json() : await res.text();
+		if (res.status === 200) return dispatch({ type: GET_CONTACTS, payload });
+		console.error(payload);
+	} catch (error) { console.error(error); }
+}
 
+// server-emitted socket.io events
 export const chatLoaded = payload => dispatch =>
 	dispatch({ type: CHAT_LOADED, payload });
-
 export const receiveMessage = payload => dispatch =>
 	dispatch({ type: RECEIVE_MESSAGE, payload });
 
+// client-emitted socket.io events
 export const sendMessage = (to, text) => dispatch => {
-	const state = store.getState();
-	const { socket } = state.data;
-	socket.emit('send message', { to, text });
+	store.getState().data.socket.emit('send message', { to, text });
 	const when = new Date();
 	dispatch({ type: SEND_MESSAGE, payload: { text, to, when } });
 };

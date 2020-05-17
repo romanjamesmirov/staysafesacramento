@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
 	const passwordCorrect = await bcrypt.compare(password, user.hashedPassword);
 	if (!passwordCorrect) return res.status(400).send('The password is incorrect.');
 	const { _id, name, have, need } = user;
-	const token = jwt.sign({ _id, username }, process.env.TOKEN_SECRET);
+	const token = jwt.sign({ _id }, process.env.TOKEN_SECRET);
 	const connections = withoutIds(user.connections);
 	res.json({ name, have, need, connections, token });
 };

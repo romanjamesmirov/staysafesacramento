@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
 		const { _id } = savedUser;
 
 		// Create, assign, and send the JSON web token. #R1
-		const token = jwt.sign({ _id, username }, process.env.TOKEN_SECRET);
+		const token = jwt.sign({ _id }, process.env.TOKEN_SECRET);
 		res.json({ token });
 	} catch (error) { res.status(400).send(error); }
 };

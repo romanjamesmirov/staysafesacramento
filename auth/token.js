@@ -8,8 +8,8 @@ module.exports = (req, res, next) => {
 
 	// If the JWT validates, we add the contained encrypted _id to req object.
 	try {
-		const decoded = jwt.verify(token.slice(7), process.env.TOKEN_SECRET);
-		req.user = { _id: decoded._id, username: decoded.username };
+		const { _id } = jwt.verify(token.slice(7), process.env.TOKEN_SECRET);
+		req.user = { _id };
 		next();
 
 		// Unauthorized if authorization header present but fails. #R3

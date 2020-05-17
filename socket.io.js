@@ -1,49 +1,59 @@
-const io = require('socket.io');
 const Chat = require('./models/Chat');
 const User = require('./models/User');
-module.exports = server => io
-	.listen(server)
-	.use(require('./auth/handshake'))
-	.on('connection', socket => {
+const server = require('./server');
+const io = require('socket.io').listen(server);
+io.use(require('./auth/handshake')); // attach user data to socket
 
-		// Each person is subbed to their own room. You send messages to someone by emitting to a room that's named after the username of that user.
-		socket.join(socket.user.username);
-		socket.on('send message', async ({ to, text }) => {
-			const when = new Date();
-
-			// If room isn't empty (i.e. if recipient is online -> room exists).
-			if (typeof io.sockets.adapter.rooms[to].sockets !== 'undefined') {
-				io.to[to].emit('receive message',
-					{ text, when, from: socket.user.username });
-			}
-
-			const chat = socket.user.chats[to] || (function () {
-				const toDocument = await User({ username: to });
-				const newChat = new Chat(
-					{ users: [socket.user._id, toDocument.username], history: [] });
-				return newChat;
-			}());
-			const msg = {
-				text, when,
-				from: chat.users[0].toString() === socket.user._id.toString() ? 0 : 1
-			}
-			chat.history = [...chat.history, msg];
-			try {
-				await chat.save();
-				socket.user.chats[to] = chat;
-			} catch (err) { socket.emit('500 error', 'Failed to save chat'); }
-		});
-
-		// When a user clicks, for the first time in the current client session, on a chat between them and somebody they talked to before, we want to load the chat so that it can be stored in redux on the client. 
-		socket.on('load chat', async to => {
-			const toDocument = await User.findOne({ username: to });
-			const chat = await Chat.findOne({
-				users: { $all: [socket.user._id, toDocument._id] }
-			});
-			socket.emit('chat loaded', chat.history);
-			socket.user.chats[to] = chat;
-		});
+const loadChat = (_id, name, contacts) => async to => {
+	const recipient = await User.findOne({ username: to });
+	const chat = await Chat.findOne({ users: { $all: [_id, recipient._id] } });
+	for (let i = 0; i < contacts.length; i++) {
+		if (contacts[i]._id.toString() !== recipient._id.toString()) continue;
+		contacts[i].name = recipient.name;
+		contacts[i].username = to;
+		contacts[i].chat = chat;
+		contacts[i].chatUserNumber = _id.toString() === chat.users[0]._id.toString() ? 1 : 0;
+		break;
+	}
+	socket.emit('chat loaded', {
+		pastMessages: chat.pastMessages,
+		contactIsChatUserNumber: contacts[i].chatUserNumber
 	});
+}
+
+const sendMessage = (from, contacts, _id, socket) => async ({ to, text }) => {
+	const when = new Date();
+	const contactIndex = (function () {
+		for (let i = 0; i < contacts.length; i++) {
+			if (contacts[i].username === to) return i;
+		}
+	}());
+	const contact = contacts[contactIndex];
+	const { chat, chatUserNumber } = contact;
+	const msgObj = { text, when, from };
+	if (!!io.sockets.adapter.rooms[to].sockets) {
+		io.to[to].emit('receive message', msgObj);
+	} // emit to user's room if they're online
+	msgObj.from = chatUserNumber === 1 ? 0 : 1;
+	const pastMessages = [...chat.pastMessages, msgObj];
+	chat.pastMessages = pastMessages;
+	try {
+		const savedChat = chat.save();
+		contacts[contactIndex].chat = savedChat;
+	}
+	catch (e) { socket.emit('500 error', 'Couldn\'t save chat'); }
+}
+
+io.on('connection', socket => {
+	const { _id } = socket.user;
+	let { name, username, contacts } = User.findOne({ _id });
+	contacts = contacts.map(contact => ({ _id: contact._id }));
+	socket.join(user.username); // one room per user
+	socket.on('load chat', loadChat(_id, name, contacts));
+	socket.on('send message', sendMessage(name, contacts, _id, socket));
+});
+
+module.exports = io;
 
 // RESOURCES
 // #R1 – Check if room is empty – stackoverflow.com/a/25028953

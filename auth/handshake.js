@@ -1,13 +1,14 @@
-// Handshake will occur when website first loads. Either the user is authorized to load and post to chatrooms or is not. Login/register causes disconnect and reconnect with handshake query that contains a token.
-const jwt = require('jsonwebtoken');
+// Handshake occurs when website first loads. Either user is or isn't authorized to load and post to chats. Login/register causes disconnect + reconnect with new handshake query containing token
 module.exports = (socket, next) => {
 	const { query } = socket.handshake;
-	if (!query || !query.token) return next(new Error('Socket authorization error'));
+	const error = new Error('Socket authorization error');
+	if (!query || !query.token) return next(error);
 	try {
-		const { _id, username } = jwt.verify(query.token, process.env.TOKEN_SECRET);
-		socket.user = { _id, username, chats: {}, connections: query.connections };
-	} catch (err) { return next(new Error('Socket authorization error')); }
-	next();
+		const jwt = require('jsonwebtoken');
+		const { _id } = jwt.verify(query.token, process.env.TOKEN_SECRET);
+		socket.user = { _id };
+		next();
+	} catch (e) { next(error) }
 };
 
 // RESOURCES

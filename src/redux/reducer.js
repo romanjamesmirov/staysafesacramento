@@ -1,21 +1,21 @@
 import { combineReducers } from 'redux';
-import { REGISTER, LOGIN, GET_ALL_USERS, CHAT_LOADED, RECEIVE_CHAT, SEND_CHAT } from './types';
+import { REGISTER, LOGIN, GET_ALL_USERS, GET_CONTACTS, CHAT_LOADED, RECEIVE_CHAT, SEND_CHAT } from './actions';
 
 function reducer(state = {}, action) {
 	switch (action.type) {
 		case REGISTER:
 		case LOGIN:
 			action.payload.bellIconNum = countUnread(action.payload.connections);
-			const stateAllUsers = allUsersWithoutDupes(payload, state);
-			if (!stateAllUsers) return { ...state, ...action.payload };
-			return { ...state, ...action.payload, allUsers: stateAllUsers };
-		case GET_ALL_USERS:
-			const payloadAllUsers = allUsersWithoutDupes(payload, state);
-			return { ...state, allUsers: payloadAllUsers };
-		case CHAT_LOADED:
-			/* OK, so here's the deal. I'm going to bed at 9 PM but I want you to know where I left off so you know what to pick up on. I have my connections array in redux. It's either undefined if the user isn't logged in or an array with zero or more usernames in there (if it's zero, it's not undefined as [] == true, remember?). OK so when I load a chat from socket.io, I want to add to the appropriate connection a property `history` with the chat history stored there. If the connection doesn't exist, move it from the allUsers array or call /api/user if !allUsers. And that's another thing. Don't just delete duplicates from the allUsers array in allUsersWithoutDupes(). You want to transfer the name, have, and need properties of those users to the connections array. By default, the connections array is just usernames. So to recap, two things to work on: allUsersWithoutDupes() should also return an updated connections array and case CHAT_LOADED should add the chat to a connection in the connections array (pull from allUsers or /api/user if it's a new connection). */
+			const recalculated = newOrSameUserGroupsObj(action.payload, state);
+			action.payload.connections = recalculated.connections;
+			return { ...state, ...action.payload, allUsers: recalculated.allUsers };
+		case GET_ALL_USERS: { // Curly braces because you can't redeclare vars. 
+			const { allUsers, connections } = newOrSameUserGroupsObj(action.payload, state);
+			return { ...state, allUsers, connections };
+		} case CHAT_LOADED:
+			/* add the chat to a connection in the connections array (pull from allUsers or /api/user if it's a new connection). */
 			const { connections } = state;
-			const connectionIndex = getConnectionIndex(connections, action.payload.recipientUsername);
+			const connectionIndex = findUserIndexByUsername(connections, action.payload.recipientUsername);
 			if (!connectionIndex) {
 				return { ...state, connections: connections.concat(action.payload) };
 			}
@@ -25,46 +25,39 @@ function reducer(state = {}, action) {
 	}
 }
 
-// Check if we need to call withoutUsers() and call if we do. 
-function allUsersWithoutDupes(payload, state) {
+function newOrSameUserGroupsObj(payload, state) {
 	const username = payload.username || state.username;
 	const connections = payload.connections || state.connections;
 	const allUsers = state.allUsers || payload.allUsers;
-	if (!allUsers || !username) return allUsers; 
-	return withoutUsers(allUsers, [...connections, username]);
+	if (!allUsers || !connections) return { allUsers, connections };
+	const currentUserIndex = findUserIndexByUsername(allUsers, username);
+	allUsers.splice(currentUserIndex, 1);
+	return newUserGroupsObj(allUsers, connections);
 }
 
-// Return allUsers array without the users with the given usernames. 
-function withoutUsers(allUsers, usernames) {
-	if (usernames.length === 0) return allUsers;
-	const slice = withoutUsers(allUsers, usernames.slice(1));
-	const username = usernames[0].username || usernames[0];
-	return withoutUsers(withoutUser(allUsers, username), slice);
+function newUserGroupsObj(allUsers, connections) {
+	if (connections.length === 0) return { allUsers, connections: [] };
+	const oldConnection = connections.splice(-1, 1);
+	const prevObj = newUserGroupsObj(allUsers, connections);
+	const { username, hasUnread } = oldConnection;
+	const connectionIndex = findUserIndexByUsername(allUsers, username);
+	const connection = allUsers.splice(connectionIndex);
+	connection.hasUnread = hasUnread;
+	return { allUsers, connections: prevObj.connections.concat(connection) };
 }
 
-// Return allUsers array without the user with the given username.
-function withoutUser(allUsers, username) {
-	if (allUsers.length === 0) return [];
-	const slice = withoutUser(allUsers.slice(0, -1), username);
-	const lastOne = allUsers[allUsers.length - 1];
-	return lastOne.username === username ? slice : allUsers;
+function findUserIndexByUsername(users, username) {
+	if (users.length === 0) return -1;
+	if (users[users.length - 1].username === username) return users.length - 1;
+	return findUserIndexByUsername(users.slice(0, -1), username);
 }
 
-// Add up and return the number of connections who have unread messages.
 function countUnread(connections) {
 	if (connections.length === 0) return 0;
-	const slice = countUnread(connections.slice(1));
-	return (connections[0].hasUnread ? 1 : 0) + slice;
+	return (connections[0].hasUnread ? 1 : 0) + countUnread(connections.slice(1));
 }
 
-function getConnectionIndex(connections, username) {
-	if (connections.length === 0) return null;
-	if (connections[connections.length - 1].username === username) return indexWhere(connections.slice(0, -1), username);
-	return connections.length - 1;
-}
-
-const combinedReducers = combineReducers({ data: reducer });
-export default combinedReducers;
+export default combineReducers({ data: reducer });
 
 // RESOURCES
 // #R1 – medium.com/hackernoon/4aea9d56f5bd To be honest, this is as great as the other top results for "react redux in x minutes". Freecodecamp had a couple on "React Redux in 10 minutes" and FCC is great as always...

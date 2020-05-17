@@ -27,9 +27,9 @@ const userSchema = new mongoose.Schema({
 		type: [String],
 		required: true
 	},
-	connections: { //#R1
+	contacts: { //#R1
 		type: [{
-			user_id: mongoose.ObjectId,
+			contact_id: mongoose.ObjectId,
 			hasUnread: Boolean 
 		}], 
 		default: []

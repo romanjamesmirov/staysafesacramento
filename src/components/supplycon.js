@@ -1,32 +1,30 @@
 import React, { Fragment } from 'react';
 
-export const allSuppliesObj = {
+export const allSuppliesSetToFalse = {
 	'Face masks': false,
 	'Hand sanitizer': false,
 	'Toilet paper': false,
 	'Ramen noodles': false
 };
 
-export const allSuppliesArr = ['Face masks', 'Hand sanitizer', 'Toilet paper', 'Ramen noodles'];
+export const arrayWithAllSupplies = ['Face masks', 'Hand sanitizer', 'Toilet paper', 'Ramen noodles'];
 
-export function objToArr(obj) {
+// Return an array containing only the supplies in this object that are set to true. 
+export function arrWithSuppliesInGroup(unfilteredObj) {
 	let arr = [];
-	for (let supply in obj) {
-		if (!obj.hasOwnProperty(supply)) continue;
-		if (obj[supply]) arr.push(supply);
+	for (let supply in unfilteredObj) {
+		if (!unfilteredObj.hasOwnProperty(supply)) continue;
+		if (unfilteredObj[supply]) arr.push(supply);
 	}
 	return arr;
 }
 
 export function arrToObj(arr) {
-	let obj = { ...allSuppliesObj };
+	let obj = { ...allSuppliesSetToFalse };
 	arr.forEach(supply => obj[supply] = true);
 	return obj;
 }
 
-// <div>Hand sanitizer, toilet paper, ramen noodles, and user icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-// <div>Face mask icon made by <a href="https://www.flaticon.com/authors/linector" title="Linector">Linector</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-// <div>Profile icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 export function Supplycons(supplies) {
 	return (
 		<ul className='Supplycon-list'>{
@@ -43,8 +41,8 @@ export function Supplycons(supplies) {
 
 export function checkboxList(group, that) { // group === 'have' or 'need'
 	let checkboxes = [];
-	for (let supply in allSuppliesObj) {
-		if (!allSuppliesObj.hasOwnProperty(supply)) continue;
+	for (let supply in allSuppliesSetToFalse) {
+		if (!allSuppliesSetToFalse.hasOwnProperty(supply)) continue;
 		const id = `id_${group}_${supply.split(' ').join('_')}`;
 		const checked = that.state[group][supply];
 		checkboxes.push((
