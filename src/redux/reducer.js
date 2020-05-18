@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { REGISTER, LOGIN, GET_ALL_USERS, GET_CONTACTS, GET_CHAT, GET_MESSAGE, POST_MESSAGE } from './actions';
+import { REGISTER, LOGIN, GET_ALL_USERS, GET_CONTACTS, GET_CHAT, POST_MESSAGE } from './actions';
 
 function reducer(state = {}, action) {
 	switch (action.type) {

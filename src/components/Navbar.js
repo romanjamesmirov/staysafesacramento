@@ -10,7 +10,7 @@ class Navbar extends Component {
 		const { username } = this.props;
 		return (<div className="Navbar">
 			<Link to="/">StaySafeSacramento</Link>
-			<Link to="/chats">Chats</Link>
+			<Link to="/contacts">Chats</Link>
 			<Link to={!username ? '/login' : `/${username}`}
 				state={!username ? { next: 'PROFILE' } : undefined}>
 				<img src={ProfileIcon} alt='My profile' /></Link>

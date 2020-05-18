@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // App components
 import Home from './components/Home';
-import Chats from './components/Chats';
+import Contacts from './components/Contacts';
 import Profile from './components/Profile';
 import Chat from './components/Chat';
 import Register from './components/Register';
@@ -15,7 +15,7 @@ import './static/styles/App.css';
 const App = () => (<BrowserRouter>
   <Switch>
     <Route path='/' component={Home} exact />
-    <Route path='/chats' component={Chats} />
+    <Route path='/contacts' component={Contacts} />
     {this.props.username
       ? <Route path={`/${this.props.username}`} component={Profile} /> : null}
     <Route path='/:username' component={Chat} />

@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const chatSchema = new mongoose.Schema({
+const chatSchema = new Schema({
 	users: { 
-		type: [mongoose.ObjectId],
+		type: [String],
 		required: true
 	},
 	pastMessages: {
 		type: [{
-			from: Number, // Index of chat.users 
+			from: Number, // User index in `users` array above 
 			when: Date,
 			text: String
 		}], 
@@ -15,4 +15,4 @@ const chatSchema = new mongoose.Schema({
 	}
 });
 
-module.exports = mongoose.model('Chat', chatSchema);
+module.exports = model('Chat', chatSchema);

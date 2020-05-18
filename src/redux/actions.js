@@ -1,18 +1,20 @@
 import store from './store';
 import authenticate from './authenticate';
 
-// types
-export const REGISTER = 'REGISTER';
+export const REGISTER = 'REGISTER'; // post types
 export const LOGIN = 'LOGIN';
-export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const POST_MESSAGE = 'POST_MESSAGE';
+export const GET_ALL_USERS = 'GET_ALL_USERS'; // get types
 export const GET_CONTACTS = 'GET_CONTACTS';
 export const GET_CHAT = 'GET_CHAT';
-export const GET_MESSAGE = 'GET_MESSAGE';
-export const POST_MESSAGE = 'POST_MESSAGE';
 
-// POST actions – authentication
+
 export const register = formData => dispatch => authenticate(REGISTER, dispatch, formData);
 export const login = formData => dispatch => authenticate(LOGIN, dispatch, formData);
+export const sendMessage = (to, text) => dispatch => {
+	// fetch 
+	dispatch({ type: POST_MESSAGE, payload: { text, to, when } });
+};
 
 // GET actions – users
 export const getAllUsers = () => dispatch => {
@@ -39,13 +41,6 @@ export const chatLoaded = payload => dispatch =>
 	dispatch({ type: GET_CHAT, payload });
 export const receiveMessage = payload => dispatch =>
 	dispatch({ type: GET_MESSAGE, payload });
-
-// client-emitted socket.io events
-export const sendMessage = (to, text) => dispatch => {
-	store.getState().data.socket.emit('send message', { to, text });
-	const when = new Date();
-	dispatch({ type: POST_MESSAGE, payload: { text, to, when } });
-};
 
 // helpers
 function makeContact(to, { username, contacts, allUsers }) {

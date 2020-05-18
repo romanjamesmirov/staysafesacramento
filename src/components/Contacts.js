@@ -1,16 +1,14 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react'; // react
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getContacts } from '../redux/actions';
-// Redux up top, router down bottom
+import { getContacts } from '../redux/actions'; // redux
 import { Redirect } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from './Navbar'; // router
 import Footer from './Footer';
-import { Supplycons } from './supplycon.js'; 
+import { Supplycons } from './supplycon.js'; // static
 
-// React boilerplate
 class Chats extends Component {
-	constructor(props) {
+	constructor(props) { // React boilerplate
 		super(props);
 		this.state = { group: 'need' };
 	}
@@ -23,8 +21,7 @@ class Chats extends Component {
 	// 'have' or 'need' – which users are we displaying? 
 	onGroupClick({ target }) { this.setState({ group: target.value }); }
 
-	// The GUI
-	render() {
+	render() { // The GUI
 		const { token, contacts } = this.props;
 		if (!token) {
 			return (<Redirect to={{
@@ -70,7 +67,7 @@ class Chats extends Component {
 // Attach redux to this component
 Chats.propTypes = { getContacts: PropTypes.func.isRequired };
 const mapStateToProps = state => ({
-				contacts: state.data.contacts,
+	contacts: state.data.contacts,
 	token: state.data.token
 });
 export default connect(mapStateToProps)(Chats);

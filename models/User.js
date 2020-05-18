@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
 	},
 	contacts: { //#R1
 		type: [{
-			contact_id: mongoose.ObjectId,
+			contact_id: String,
 			hasUnread: Boolean 
 		}], 
 		default: []

@@ -1,31 +1,18 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 require('mongoose').connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true }); // DB: ✅
 
-const express = require('express'),
-	app = express();
+const express = require('express'), app = express();
 app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
 	const path = require('path');
 	app.enable('trust proxy')
-		.use((req, res, next) => {
-			if (req.secure) next();
-			else res.redirect(`https://${req.headers.host}${req.url}`);
+		.use(function (req, res, next) {
+			if (req.secure) return next();
+			res.redirect(`https://${req.headers.host}${req.url}`);
 		})
 		.use('/api', require('./api'))
 		.use(express.static(path.join(__dirname, 'build')))
 		.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'build',
-			'index.html'))); //create-react-app.dev/docs/deployment
+			'index.html')));
 } else app.use('/api', require('./api'));
-export default server = app.listen(process.env.PORT); // Server: ✅
-
-require('./socket.io')(server); // Real time chat: ✅
-
-// FURTHER RESOURCES
-// Redirect to https – developer.ibm.com/technologies/node-js/tutorials/make-https-the-defacto-standard
-// Using http.Server – socket.io/docs/#Using-with-Express
-// Server vs createServer() – stackoverflow.com/q/13857747
-// Use socket.io without importing http – stackoverflow.com/a/49833178
-
-// DON'T DO
-// create-react-app.dev/docs/using-https-in-development
-// Use https in development – github.com/dakshshah96/local-cert-generator
+app.listen(process.env.PORT); // Server: ✅

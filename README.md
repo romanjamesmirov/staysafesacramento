@@ -35,6 +35,27 @@ After that, React redirects to either the home, connections, user profile page, 
 
 Before we do any requests, though, we open up a socket.io connection so that we can start receiving notifications if there's a new chat message. 
 
+## References (by file)
+
+server
+- [redirect to https](developer.ibm.com/technologies/node-js/tutorials/make-https-the-defacto-standard) 
+- [react deployment docs](create-react-app.dev/docs/deployment)
+- (don't do) using https in dev – [resource one](create-react-app.dev/docs/using-https-in-development) and [two](github.com/dakshshah96/local-cert-generator)
+
+api/message
+- [$all operator](docs.mongodb.com/manual/reference/operator/query/all/#op._S_all)
+
+auth/token
+- [try-catch jwt.verify syntax](npmjs.com/package/jsonwebtoken)
+
+src/components/Home
+- [<Link>'s with props](tylermcginnis.com/react-router-pass-props-to-link)
+- [mapState](react-redux.js.org/using-react-redux/connect-mapstate)
+
+src/components/Register
+- [Conditional redirect in render(). I just combined it with redux](tylermcginnis.com/react-router-programmatically-navigate)
+- [I get it now. Reducers are the middleman between state and actions. Actions have the goal of changing state, like setState. But the store is read-only. Neither actions nor reducers update state. Instead, reducers return a new state based on the current state and the action's payload. So the app isn't based on state. It's based on the reducers.](freecodecamp.org/news/9d9551ff4b3c)
+
 ## Notes
 
 - I'm wondering about my future dev flow. I should storyboard. I should completely map out the app on paper so that I can design the entire backend without going back to it after starting the frontend. Models first. Then routes. Then redux actions and reducers. By now you have the data, the communication of data between the server and client, and the storage of data from the server in the redux store. Now you can design the interface to call these actions when a button is clicked and display the information in store. In terms of packages, it's mongoose, then express, then redux, then react and css.

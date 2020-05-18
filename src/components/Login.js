@@ -1,14 +1,12 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { login } from '../redux/actions';
-// Redux up top, router down bottom
-import { Redirect, Link } from 'react-router-dom';
+import { login } from '../redux/actions'; // Router below
+import { Redirect, Link } from 'react-router-dom'; // Redux above
 import Navbar from './Navbar';
 
-// React boilerplate
 class Login extends Component {
-	constructor(props) {
+	constructor(props) { // React boilerplate
 		super(props);
 		this.state = {
 			username: '',
@@ -18,14 +16,12 @@ class Login extends Component {
 		this.onSubmit = this.onSubmit.bind(this);
 	}
 
-	// POST form data to /api/login
-	onSubmit(e) {
+	onSubmit(e) { // POST form data to /api/login
 		e.preventDefault();
 		const { username, password } = this.state;
 		this.props.login({ username, password });
 	}
 
-	// Make form inputs controlled
 	onChange({ target }) { this.setState({ [target.name]: target.value }); }
 
 	// Define what the next page is to redirect to and redirect there if login succeeds
@@ -46,40 +42,33 @@ class Login extends Component {
 		}
 		if (!!token) return <Redirect to={next} />;
 
-		// The GUI
-		return (
-			<Fragment>
-				<Navbar />
-				<div><Link to={{
-					pathname: '/register',
-					state: { next }
-				}}>Register instead</Link></div>
-				<h1>{h1Text}</h1>
+		return (<Fragment> {/* The GUI */}
+			<Navbar />
+			<div><Link to={{
+				pathname: '/register',
+				state: { next }
+			}}>Register instead</Link></div>
+			<h1>{h1Text}</h1>
 
-				{/* Username */}
-				<form action="#" onSubmit={onSubmit}>
-					<div>
-						<label htmlFor="id_username">Username</label>
-						<input type="text" id="id_username" name="username"
-							value={state.username} onChange={onChange} /></div>
+			<form action="#" onSubmit={onSubmit}>
+				<div> {/* Username */}
+					<label htmlFor="id_username">Username</label>
+					<input type="text" id="id_username" name="username"
+						value={state.username} onChange={onChange} /></div>
 
-					{/* Password */}
-					<div>
-						<label htmlFor="id_password">Password</label>
-						<input type="password" id="id_password" name="password"
-							value={state.password} onChange={onChange} /></div>
+				<div> {/* Password */}
+					<label htmlFor="id_password">Password</label>
+					<input type="password" id="id_password" name="password"
+						value={state.password} onChange={onChange} /></div>
 
-					{/* Redux login() */}
-					<button type="submit">Login</button>
-				</form>
-			</Fragment>
-		);
+				<button type="submit">Login</button> {/* Redux login() */}
+			</form>
+		</Fragment>);
 	}
 }
 
-// Attach redux to this component (get it – attach to `this`... component)
 Login.propTypes = { login: PropTypes.func.isRequired };
 const mapStateToProps = state => ({
 	token: state.data.token, username: state.data.token
 });
-export default connect(mapStateToProps, { login })(Login);
+export default connect(mapStateToProps, { login })(Login); // Attach redux

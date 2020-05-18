@@ -1,36 +1,32 @@
 import React, { Fragment, Component } from 'react';
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'; // Redux
 import PropTypes from 'prop-types';
 import { getAllUsers } from '../redux/actions';
-// Redux up top, router down bottom
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Router
 import Navbar from './Navbar';
 import { Supplycons } from './supplycon';
 
-// React boilerplate 
-class Home extends Component {
-	constructor(props) {
+class Home extends Component { 
+	constructor(props) { // React boilerplate 
 		super(props);
 		this.state = { group: 'need' };
 		this.onGroupClick = this.onGroupClick.bind(this);
 	}
 
-	// allUsers is always up-to-date with the server when you visit the home screen, but we only call for the entire array from the server ONCE per session... :)
-	componentDidMount() {
+	componentDidMount() { // call for all users once per session
 		if (!this.props.allUsers) return this.props.getAllUsers();
 	}
 
 	// 'have' or 'need' – which users are we displaying? 
 	onGroupClick({ target }) { this.setState({ group: target.value }); }
 
-	// Destructuring helps in the long run. Think long term. 
-	render() {
+	
+	render() { // Destructuring helps in the long run. Think long term. 
 		const { state, onGroupClick, props } = this;
 		const { username, allUsers } = props;
 
-		// Links to other pages
 		return (<Fragment>
-			<Navbar />
+			<Navbar /> {/* Links to other pages */}
 			{!!username ? undefined : <div className="Register-or-log-in">
 				<Link to='/register'>Register with us!</Link>
 				<Link to='/login'>Or log in</Link>
@@ -74,7 +70,3 @@ const mapStateToProps = state => {
 	return { allUsers, username };
 };
 export default connect(mapStateToProps, { getAllUsers })(Home);
-
-// RESOURCES
-// #R1 – <Link>'s with props – tylermcginnis.com/react-router-pass-props-to-link
-// #R2 – mapState – react-redux.js.org/using-react-redux/connect-mapstate
