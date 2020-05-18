@@ -1,49 +1,52 @@
 import { combineReducers } from 'redux';
-import { REGISTER, LOGIN, GET_ALL_USERS, GET_CONTACTS, CHAT_LOADED, RECEIVE_CHAT, SEND_CHAT } from './actions';
+import { REGISTER, LOGIN, GET_ALL_USERS, GET_CONTACTS, GET_CHAT, GET_MESSAGE, POST_MESSAGE } from './actions';
 
 function reducer(state = {}, action) {
 	switch (action.type) {
 		case REGISTER:
 		case LOGIN:
-			action.payload.bellIconNum = countUnread(action.payload.connections);
+			action.payload.bellIconNum = countUnread(action.payload.contacts);
 			const recalculated = newOrSameUserGroupsObj(action.payload, state);
-			action.payload.connections = recalculated.connections;
+			action.payload.contacts = recalculated.contacts;
 			return { ...state, ...action.payload, allUsers: recalculated.allUsers };
-		case GET_ALL_USERS: { // Curly braces because you can't redeclare vars. 
-			const { allUsers, connections } = newOrSameUserGroupsObj(action.payload, state);
-			return { ...state, allUsers, connections };
-		} case CHAT_LOADED:
-			/* add the chat to a connection in the connections array (pull from allUsers or /api/user if it's a new connection). */
-			const { connections } = state;
-			const connectionIndex = findUserIndexByUsername(connections, action.payload.recipientUsername);
-			if (!connectionIndex) {
-				return { ...state, connections: connections.concat(action.payload) };
-			}
-			connections[connectionIndex] = action.payload;
-			return { ...state, connections };
+		case GET_ALL_USERS: { 
+			const { allUsers, contacts } = newOrSameUserGroupsObj(action.payload, state);
+			return { ...state, allUsers, contacts };
+		} case GET_CONTACTS:
+			return { ...state, contacts: action.payload };
+		case GET_CHAT:
+			// add the chat to a contact in the contacts array (pull from allUsers or /api/user if it's a new contact).
+			const { contacts } = state;
+			const contactIndex = findUserIndexByUsername(contacts, action.payload.to);
+			contacts[contactIndex].pastMessages = action.payload.pastMessages;
+			contacts[contactIndex].contactIsChatUserNumber = action.payload.contactIsChatUserNumber;
+			return { ...state, contacts };
+		case GET_MESSAGE:
+			const { contacts } = state;
+			
 		default: return state;
 	}
 }
 
 function newOrSameUserGroupsObj(payload, state) {
 	const username = payload.username || state.username;
-	const connections = payload.connections || state.connections;
+	const contacts = payload.contacts || state.contacts;
 	const allUsers = state.allUsers || payload.allUsers;
-	if (!allUsers || !connections) return { allUsers, connections };
+	if (!allUsers || !contacts) return { allUsers, contacts };
 	const currentUserIndex = findUserIndexByUsername(allUsers, username);
 	allUsers.splice(currentUserIndex, 1);
-	return newUserGroupsObj(allUsers, connections);
+	return newUserGroupsObj(allUsers, contacts);
 }
 
-function newUserGroupsObj(allUsers, connections) {
-	if (connections.length === 0) return { allUsers, connections: [] };
-	const oldConnection = connections.splice(-1, 1);
-	const prevObj = newUserGroupsObj(allUsers, connections);
-	const { username, hasUnread } = oldConnection;
-	const connectionIndex = findUserIndexByUsername(allUsers, username);
-	const connection = allUsers.splice(connectionIndex);
-	connection.hasUnread = hasUnread;
-	return { allUsers, connections: prevObj.connections.concat(connection) };
+function newUserGroupsObj(allUsers, contacts) {
+	if (contacts.length === 0) return { allUsers, contacts: [] };
+	const oldcontact = contacts.splice(-1, 1);
+	const prevObj = newUserGroupsObj(allUsers, contacts);
+	const { username, hasUnread } = oldcontact;
+	const contactIndex = findUserIndexByUsername(allUsers, username);
+	const contact = allUsers.splice(contactIndex);
+	contact.hasUnread = hasUnread;
+	return { allUsers, contacts: prevObj.contacts.concat(contact) };
 }
 
 function findUserIndexByUsername(users, username) {
@@ -52,9 +55,9 @@ function findUserIndexByUsername(users, username) {
 	return findUserIndexByUsername(users.slice(0, -1), username);
 }
 
-function countUnread(connections) {
-	if (connections.length === 0) return 0;
-	return (connections[0].hasUnread ? 1 : 0) + countUnread(connections.slice(1));
+function countUnread(contacts) {
+	if (contacts.length === 0) return 0;
+	return (contacts[0].hasUnread ? 1 : 0) + countUnread(contacts.slice(1));
 }
 
 export default combineReducers({ data: reducer });
