@@ -38,23 +38,28 @@ Before we do any requests, though, we open up a socket.io connection so that we 
 ## References (by file)
 
 server
-- [redirect to https](developer.ibm.com/technologies/node-js/tutorials/make-https-the-defacto-standard) 
-- [react deployment docs](create-react-app.dev/docs/deployment)
-- (don't do) using https in dev – [resource one](create-react-app.dev/docs/using-https-in-development) and [two](github.com/dakshshah96/local-cert-generator)
+- [redirect to https](https://developer.ibm.com/technologies/node-js/tutorials/make-https-the-defacto-standard) 
+- [react deployment docs](https://create-react-app.dev/docs/deployment)
+- (don't do) using https in dev – [resource one](https://create-react-app.dev/docs/using-https-in-development) and [two](github.com/dakshshah96/local-cert-generator)
 
 api/message
-- [$all operator](docs.mongodb.com/manual/reference/operator/query/all/#op._S_all)
+- [$all operator](https://docs.mongodb.com/manual/reference/operator/query/all/#op._S_all)
 
 auth/token
-- [try-catch jwt.verify syntax](npmjs.com/package/jsonwebtoken)
+- [try-catch jwt.verify syntax](https://npmjs.com/package/jsonwebtoken)
+
+src/redux/actions
+- [access redux store outside component](https://daveceddia.com/access-redux-store-outside-react/)
+- [Why didn't I prepend "http://localhost:5000/" to my URLs? I set "proxy" in package.json. It's http in development and https in production... Since in production, React is built in /build and served by Express, so the server and client are of the same origin in Heroku.](https://create-react-app.dev/docs/proxying-api-requests-in-development)
+- [Access redux state outside component](https://daveceddia.com/access-redux-store-outside-react)
 
 src/components/Home
-- [<Link>'s with props](tylermcginnis.com/react-router-pass-props-to-link)
-- [mapState](react-redux.js.org/using-react-redux/connect-mapstate)
+- [<Link>'s with props](https://tylermcginnis.com/react-router-pass-props-to-link)
+- [mapState](https://react-redux.js.org/using-react-redux/connect-mapstate)
 
 src/components/Register
-- [Conditional redirect in render(). I just combined it with redux](tylermcginnis.com/react-router-programmatically-navigate)
-- [I get it now. Reducers are the middleman between state and actions. Actions have the goal of changing state, like setState. But the store is read-only. Neither actions nor reducers update state. Instead, reducers return a new state based on the current state and the action's payload. So the app isn't based on state. It's based on the reducers.](freecodecamp.org/news/9d9551ff4b3c)
+- [Conditional redirect in render(). I just combined it with redux](https://tylermcginnis.com/react-router-programmatically-navigate)
+- [I get it now. Reducers are the middleman between state and actions. Actions have the goal of changing state, like setState. But the store is read-only. Neither actions nor reducers update state. Instead, reducers return a new state based on the current state and the action's payload. So the app isn't based on state. It's based on the reducers.](https://freecodecamp.org/news/9d9551ff4b3c)
 
 ## Notes
 

@@ -1,11 +1,10 @@
 // Register = create then log in, Login = find then log in. So log in and save user metadata (from form or res) + new socket connection in redux. 
 import io from 'socket.io-client';
-async function authenticate(type, formData, dispatch) {
+async function authenticate(formData, type) {
 	try {
-		const res = await fetch(`/api/${type.toLowerCase()}`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(formData)
+		const res = await fetch(`/api/${type}`, {
+			method: 'POST', body: JSON.stringify(formData),
+			headers: { 'Content-Type': 'application/json' }
 		});
 		if (res.status === 200) {
 			const body = await res.json();
@@ -23,7 +22,7 @@ async function authenticate(type, formData, dispatch) {
 					}
 				})
 			};
-			return dispatch({ type, payload });
+			return payload;
 		}
 		// Our server passes JSON if it's a 200. If it's an error message, it passes plain text. 
 		const error = await res.text();

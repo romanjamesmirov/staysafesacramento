@@ -5,7 +5,7 @@ const Chat = require('../models/Chat');
 module.exports = async (req, res) => {
 	const when = new Date(); // capture time asap
 	const user = await User.findOne(ObjectId(req.user._id));
-	const contact = await User.findOne({ username: req.params.username });
+	const contact = await User.findOne({ username: req.params.to });
 	const contact_id = contact._id.valueOf();
 	const chat = await Chat.findOne( // find chat using _id values
 		{ users: { $all: [req.user._id, contact_id] } });

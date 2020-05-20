@@ -1,61 +1,60 @@
 import store from './store';
 import authenticate from './authenticate';
 
-export const REGISTER = 'REGISTER'; // post types
+export const REGISTER = 'REGISTER'; //⬇POST actions
 export const LOGIN = 'LOGIN';
-export const POST_MESSAGE = 'POST_MESSAGE';
-export const GET_ALL_USERS = 'GET_ALL_USERS'; // get types
-export const GET_CONTACTS = 'GET_CONTACTS';
-export const GET_CHAT = 'GET_CHAT';
-
-
-export const register = formData => dispatch => authenticate(REGISTER, dispatch, formData);
-export const login = formData => dispatch => authenticate(LOGIN, dispatch, formData);
-export const sendMessage = (to, text) => dispatch => {
-	// fetch 
-	dispatch({ type: POST_MESSAGE, payload: { text, to, when } });
+export const MESSAGE = 'MESSAGE';
+export const register = formData => dispatch => {
+	const payload = authenticate(formData, 'register');
+	if (!!payload) dispatch({ type: REGISTER, payload });
+}
+export const login = formData => dispatch => {
+	const payload = authenticate(formData, 'login');
+	if (!!payload) dispatch({ type: LOGIN, payload });
+}
+export const message = (to, text) => dispatch => {
+	const { token, username } = store.getState().data;
+	const headers = //⬇POST message
+		{ 'Content-Type': 'text/plain', 'Authorization': `Bearer ${token}` };
+	fetch(`/api/chat/${to}`, { method: 'POST', headers, body: text })
+		.then(res => {
+			if (res.status !== 200) throw new Error();
+			const message = { from: username, when: new Date(), text }; //⬇dispatch
+			dispatch({ type: MESSAGE, payload: { to, message } });
+		})
+		.catch(e => console.error('Failed to save new message'));
 };
 
-// GET actions – users
+export const GET_ALL_USERS = 'GET_ALL_USERS'; //⬇GET actions
+export const GET_CONTACTS = 'GET_CONTACTS';
+export const GET_CHAT = 'GET_CHAT';
 export const getAllUsers = () => dispatch => {
 	try {
-		const res = await fetch('/api/users');
-		const payload = res.status === 200 ? await res.json() : await res.text();
-		if (res.status === 200) return dispatch({ type: GET_ALL_USERS, payload });
-		console.error(payload);
+		const res = await fetch('/api/users'); // no query params = all users
+		if (res.status !== 200) throw new Error('Could not get users');
+		res.json().then(payload => dispatch({ type: GET_ALL_USERS, payload }));
 	} catch (error) { console.error(error); }
 }
 export const getContacts = contacts => dispatch => {
-	const usernames = contacts.map(contact => contact.username);
-	const URL = `/api/users?${contacts.map((username, index) => `&${index}=${username}`).join('').slice(1)}`;
-	try {
-		const res = await fetch(URL);
-		const payload = res.status === 200 ? await res.json() : await res.text();
-		if (res.status === 200) return dispatch({ type: GET_CONTACTS, payload });
-		console.error(payload);
+	const usernames = contacts.map(({ username }, index) => username);
+	try { // query params = just give me these users
+		const res = await fetch(`/api/users?usernames=${usernames.join(',')}`); 
+		if (res.status !== 200) throw new Error('Could not get users');
+		res.json().then(payload => dispatch({ type: GET_CONTACTS, payload }));
 	} catch (error) { console.error(error); }
 }
-
-// server-emitted socket.io events
-export const chatLoaded = payload => dispatch =>
-	dispatch({ type: GET_CHAT, payload });
-export const receiveMessage = payload => dispatch =>
-	dispatch({ type: GET_MESSAGE, payload });
-
-// helpers
-function makeContact(to, { username, contacts, allUsers }) {
-	if (username === to) return; // you can't be a contact of yourself
-	for (let i = 0; i < contacts.length; i++) {
-		if (contacts[i].username === to) return; // don't re-add contacts
-	}
-	for (let i = 0; i < (!!allUsers ? allUsers.length : 0); i++) {
-		if (allUsers[i].username !== to) continue;
-		const user = allUsers[i].splice(i, 1)[0];
-		
-	}
-	if ()
+export const getChat = to => dispatch => {
+	const { token, contacts } = store.getState().data;
+	const isNotFirstLoadParam = (function () { 
+		for (let i = 0; i < contacts.length; i++) {
+			if (contacts[i].username !== to) continue; 
+			return !contacts[i].pastMessages ? '' : '?isNotFirstLoad';
+		}
+	}());
+	try {
+		const headers = { 'Authorization': `Bearer ${token}` }
+		const res = await fetch(`/api/chat/${to}${isNotFirstLoadParam}`, headers);
+		if (res.status !== 200) throw new Error('Could not get chat');
+		res.json().then(payload => dispatch({ type: GET_CHAT, payload }));
+	} catch (e) { console.error(e); }
 }
-
-// RESOURCES
-// #R1 – Why didn't I prepend "http://localhost:5000/" to my URLs? I set "proxy" in package.json. create-react-app.dev/docs/proxying-api-requests-in-development It's http in development and https in production... Since in production, React is built in /build and served by Express, so the server and client are of the same origin in Heroku. 
-// #R2 – Access redux state outside component – daveceddia.com/access-redux-store-outside-react

@@ -1,34 +1,43 @@
 import { combineReducers } from 'redux';
-import { REGISTER, LOGIN, GET_ALL_USERS, GET_CONTACTS, GET_CHAT, POST_MESSAGE } from './actions';
+import { REGISTER, LOGIN, MESSAGE, GET_ALL_USERS, GET_CONTACTS, GET_CHAT } from './actions';
 
 function reducer(state = {}, action) {
 	switch (action.type) {
 		case REGISTER:
-		case LOGIN:
-			action.payload.bellIconNum = countUnread(action.payload.contacts);
-			const recalculated = newOrSameUserGroupsObj(action.payload, state);
-			action.payload.contacts = recalculated.contacts;
-			return { ...state, ...action.payload, allUsers: recalculated.allUsers };
-		case GET_ALL_USERS: { 
-			const { allUsers, contacts } = newOrSameUserGroupsObj(action.payload, state);
+		case LOGIN: {
+			const { payload } = action;
+			const { allUsers, contacts } = evaluateUserGroups(payload, state);
+			const bellIconNum = countUnread(payload.contacts);
+			return { ...state, ...payload, contacts, bellIconNum, allUsers };
+		} case MESSAGE: { // TODO: handle messages to non-contacts 
+			const { contacts } = state;
+			for (let i = 0; i < contacts.length; i++) {
+				if (contacts[i].username !== action.payload.to) continue;
+				contacts[i].pastMessages.push(action.payload.message);
+				break;
+			}
+			return { ...state, contacts };
+		} case GET_ALL_USERS: {
+			const { allUsers, contacts } = evaluateUserGroups(action.payload, state);
 			return { ...state, allUsers, contacts };
 		} case GET_CONTACTS:
 			return { ...state, contacts: action.payload };
 		case GET_CHAT:
-			// add the chat to a contact in the contacts array (pull from allUsers or /api/user if it's a new contact).
-			const { contacts } = state;
-			const contactIndex = findUserIndexByUsername(contacts, action.payload.to);
-			contacts[contactIndex].pastMessages = action.payload.pastMessages;
-			contacts[contactIndex].contactIsChatUserNumber = action.payload.contactIsChatUserNumber;
+			const { username, contacts } = state;
+			const contactIndex = action.payload.users[0] === username ? 1 : 0;
+			const contactUsername = action.payload.users[contactIndex];
+			for (let i = 0; i < contacts.length; i++) {
+				if (contacts[i].username !== contactUsername) continue;
+				contacts[i].pastMessages = action.payload.pastMessages;
+				contacts[i].chatUsers = action.payload.users;
+				break;
+			}
 			return { ...state, contacts };
-		case GET_MESSAGE:
-			const { contacts } = state;
-			
 		default: return state;
 	}
 }
 
-function newOrSameUserGroupsObj(payload, state) {
+function evaluateUserGroups(payload, state) {
 	const username = payload.username || state.username;
 	const contacts = payload.contacts || state.contacts;
 	const allUsers = state.allUsers || payload.allUsers;
