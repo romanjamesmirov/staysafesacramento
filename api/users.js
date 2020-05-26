@@ -1,19 +1,20 @@
 const User = require('../models/User');
 
 module.exports = async (req, res) => {
-	const usersUnsafe = (function (usernames) {
-		const users = !usernames ? await User.find({})
-			: usernames.split(',').map(username => {
-				const user = await User.findOne({ username });
-				return user;
-			});
-		return users.length > 1 ? users : users[0];
-	}(req.query.usernames));
-
-	const usersSafe = usersUnsafe.map(user => {
-		const { name, username, need, have } = user;
-		return { name, username, need, have };
-	});
-
-	res.json(usersSafe);
+	if (!usernames) { // nobody specific? 
+		const users = User.find({}); // then return everyone.
+		for (let i = 0; i < users.length; i++) {
+			const { name, username, need, have } = users[i];
+			users[i] = { name, username, need, have }; // no private info
+		}
+		return res.json(users);
+	}
+	const users = usernames.split(','); // someone(s) specific? 
+	for (let i = 0; i < users.length; i++) {
+		const user = await User.findOne({ username: users[i] });
+		if (!user) { users.splice(i, 1); continue; } // doesn't exist?
+		const { name, username, need, have } = user; 
+		users[i] = { name, username, need, have }; // no private info
+	}
+	res.json(!users[1] ? users[0] : users); // people or person? 
 };

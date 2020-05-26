@@ -37,21 +37,34 @@ Before we do any requests, though, we open up a socket.io connection so that we 
 
 ## References (by file)
 
+models/User.js
+- [In Mongoose, define a field that's an array of objects (User.contacts)](https://stackoverflow.com/questions/19695058)
+
 server
 - [redirect to https](https://developer.ibm.com/technologies/node-js/tutorials/make-https-the-defacto-standard) 
 - [react deployment docs](https://create-react-app.dev/docs/deployment)
 - (don't do) using https in dev – [resource one](https://create-react-app.dev/docs/using-https-in-development) and [two](github.com/dakshshah96/local-cert-generator)
+
+api/register
+- [In requests and responses, where do you put the token?](https://stackoverflow.com/a/43492093)
 
 api/message
 - [$all operator](https://docs.mongodb.com/manual/reference/operator/query/all/#op._S_all)
 
 auth/token
 - [try-catch jwt.verify syntax](https://npmjs.com/package/jsonwebtoken)
+- [401 Unauthorized vs 403 Forbidden](https://stackoverflow.com/a/3297081)
+- [Confirmation of 401 vs 403 use-cases](https://webmasters.stackexchange.com/a/90656)
+- [Why is res returned in some places and not returned if it's the last thing in the function definition?](https://stackoverflow.com/q/52919585)
 
 src/redux/actions
 - [access redux store outside component](https://daveceddia.com/access-redux-store-outside-react/)
 - [Why didn't I prepend "http://localhost:5000/" to my URLs? I set "proxy" in package.json. It's http in development and https in production... Since in production, React is built in /build and served by Express, so the server and client are of the same origin in Heroku.](https://create-react-app.dev/docs/proxying-api-requests-in-development)
 - [Access redux state outside component](https://daveceddia.com/access-redux-store-outside-react)
+
+src/redux/reducer
+- [To be honest, this is as great as the other top results for "react redux in x minutes". Freecodecamp had a couple on "React Redux in 10 minutes" and FCC is great as always...](https://medium.com/hackernoon/4aea9d56f5bd)
+- [...But bradtraversy's starter from his video on Redux with React which I watched a while ago is the best thing out there to get going. But even better is the knowledge of how beautifully simple Redux is. State is read-only. Actions are your setState. So what do actions do if not change state? They make a reducer return a new state based on the current state and the action.payload. So the app isn't based on state. It's based on reducers. Boom.](https://github.com/bradtraversy/redux_crash_course/blob/master/src)
 
 src/components/Home
 - [<Link>'s with props](https://tylermcginnis.com/react-router-pass-props-to-link)

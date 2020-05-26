@@ -4,34 +4,31 @@ const userSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
-		min: 2,
-		max: 256
+		min: 2, max: 256
 	},
 	username: {
 		type: String,
 		required: true,
-		min: 2,
-		max: 256
+		min: 2, max: 256
 	},
 	hashedPassword: {
 		type: String,
 		required: true,
-		min: 8,
-		max: 1024
+		min: 8, max: 1024
 	},
 	have: {
-		type: [String], 
+		type: [String],
 		required: true
 	},
 	need: {
 		type: [String],
 		required: true
 	},
-	contacts: { //#R1
+	contacts: {
 		type: [{
 			contact_id: String,
-			hasUnread: Boolean 
-		}], 
+			hasUnread: Boolean
+		}],
 		default: []
 	},
 	date: {
@@ -41,5 +38,3 @@ const userSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('User', userSchema);
-
-// #R1 – Defining an array of objects – stackoverflow.com/questions/19695058

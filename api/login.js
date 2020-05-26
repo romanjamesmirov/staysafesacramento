@@ -17,19 +17,29 @@ module.exports = async (req, res) => {
 	if (!passwordCorrect) return res.status(400).send('The password is incorrect.');
 	const { _id, name, have, need } = user;
 	const token = jwt.sign({ _id }, process.env.TOKEN_SECRET);
-	const connections = withoutIds(user.connections);
-	res.json({ name, have, need, connections, token });
+	const contacts = withoutIds(user.contacts);
+	res.json({ name, have, need, contacts, token });
 };
 
-// Don't send Mongo _id's of connections – replace with public user data.
-async function withoutIds(users) {
-	if (users.length === 0) return [];
-	const slice = replaceIds(users.slice(0, -1));
-	const { user_id, hasUnread } = users[users.length - 1];
-	const user = await User.findOne({ _id: user_id });
-	if (!user) return slice;
-	const { name, username, need, have } = user;
-	return slice.concat({ name, username, need, have, hasUnread });
+
+/* 
+
+OI! I have a very important question. Why are we sending contacts upon login? Just send the _ids and hasUnread! It's safe to pass _ids. Who the fuck cares anyway? You're nobody, nobody's on this site to even make it worth hacking. Pass _id's, don't pass all these contacts' data. Do that when the user visits staysafe.com/contacts. Then redux will make a fetch. But not here. 
+
+*/
+
+
+// Don't send Mongo _id's of contacts – replace with public user data.
+async function withoutIds(contacts) {
+	const newContacts = [];
+	for (let i = 0; i < contacts.length; i++) {
+		const contact = await User.findOne(contacts[i].user_id);
+		if (!contact) continue;
+		const { name, username, need, have } = contact;
+		const { hasUnread } = contacts[i];
+		newContacts.push({ name, username, need, have, hasUnread })
+	}
+	return newContacts;
 }
 
 // QUESTIONS

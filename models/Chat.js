@@ -7,7 +7,7 @@ const chatSchema = new Schema({
 	},
 	pastMessages: {
 		type: [{
-			from: Number, // User index in `users` array above 
+			from: Number, // User index in `users` array  
 			when: Date,
 			text: String
 		}], 
