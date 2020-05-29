@@ -1,8 +1,11 @@
 {
   "name": "staysafesacramento",
   "version": "1.0.0",
-  "description": "The pandemic affects us all; share supplies with people.",
+  "description": "Find people who have or need supplies in this pandemic",
+  "author": "Roman Mirov",
+  "license": "MIT",
   "main": "server.js",
+  "proxy": "http://127.0.0.1:3001",
   "scripts": {
     "start": "node server.js",
     "client": "PORT=3000 react-scripts start",
@@ -10,16 +13,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "nodemon server",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/romanjamesmirov/staysafesacramento.git"
-  },
-  "author": "Roman Mirov",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/romanjamesmirov/staysafesacramento/issues"
+    "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
@@ -43,7 +37,13 @@
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.3"
   },
-  "proxy": "http://localhost:5000",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/romanjamesmirov/staysafesacramento.git"
+  },
+  "bugs": {
+    "url": "https://github.com/romanjamesmirov/staysafesacramento/issues"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },

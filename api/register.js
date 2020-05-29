@@ -3,8 +3,8 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const registerValidation = require('../auth/register');
-module.exports = async (req, res) => {
 
+module.exports = async (req, res) => {
 	// Validate user data, make sure it conforms to User requirements.
 	const { error } = registerValidation(req.body);
 	if (error) return res.status(400).send(error.details[0].message);

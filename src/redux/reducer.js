@@ -18,8 +18,9 @@ function reducer(state = {}, action) {
 			}
 			return { ...state, contacts };
 		} case GET_ALL_USERS: {
-			const { allUsers, contacts } = evaluateUserGroups(action.payload, state);
-			return { ...state, allUsers, contacts };
+			// const { allUsers, contacts } = evaluateUserGroups(action.payload, state);
+			const allUsers = action.payload;
+			return { ...state, allUsers/* , contacts  */};
 		} case GET_CONTACTS:
 			return { ...state, contacts: action.payload };
 		case GET_CHAT:

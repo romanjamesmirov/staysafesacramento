@@ -1,0 +1,149 @@
+/* normalize spacing, fonts... */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { font-size: 10px; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 1.9rem;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+input, button, textarea, select, a {
+  font: inherit;
+	color: inherit;
+	text-decoration: none;
+}
+
+img, svg { display: block; }
+
+/* navbar */
+
+#Navbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	width: 100%;
+}
+
+#Navbar a {
+	padding: 0.5em;
+}
+
+#Navbar #Active-nav-link::after {
+	content: "";
+	display: block;
+	background-color: black;
+	width: 100%;
+	height: 2px;
+	position: relative;
+	top: 5px;
+}
+
+/* home page */
+
+#Home-page #Register-Login-links {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+}
+
+#Home-page #Register-Login-links a {
+	padding: 0.5em;
+}
+
+#Home-page #Register-Login-links a:first-child {
+	border: 2px solid black;
+	margin: 0.5em 0;
+}
+
+.Me {
+	display: block;
+	width: 1.5em;
+	text-decoration: none;
+	margin: 2rem 2rem 1rem auto;
+}
+
+.Icon-label {
+	font-size: 0.5em;
+	font-weight: 700;
+	display: block;
+	text-align: center;
+}
+
+h3 {
+	padding: 1rem 2rem;
+}
+
+/* leave almost all styles the same to make it obvious it's a button */
+/* native, platform-specific styles do best at making it clear */
+h3 button {
+	display: inline-block;
+	padding: 0.4rem 0.8rem;
+	margin: 0 0.8rem;
+	cursor: pointer;
+}
+
+li {
+	list-style-type: none;
+}
+
+.Person-item a {
+	border: none;
+	border-bottom: 1px solid #eee;
+	width: 100vw;
+	text-align: left;
+	text-decoration: none;
+	padding: 1rem 2rem;
+	display: flex;
+	align-items: center;
+	font-weight: 500;
+}
+
+.Person-item:hover, .Person-item:focus {
+	background-color: #f8f8f8;
+}
+
+.Person-name {
+	display: block;
+	padding-right: 1rem;
+}
+
+.Supplycon-list {
+	display: flex;
+}
+
+.Supplycon-item {
+	padding-left: 2rem;
+}
+
+svg {
+	width: 1.4em;
+	height: auto;
+	margin: 0 auto;
+}
+
+.Register-page input[type="checkbox"] {
+	display: none;
+}
+
+.Register-page label {
+	display: inline-block;
+	padding: 0.5em;
+	border-radius: 0.4rem;
+	border: 0.2rem solid transparent;
+}
+
+.Register-page label.checked {
+	border-color: #8ce;
+}

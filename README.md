@@ -1,6 +1,6 @@
 # Stay Safe, Sacramento
 
-Alright. I've redone this project entirely many times and I need to write down the major assumptions and the backend architecture. 
+Alright. I've completely redone this project many times. I need to write down the major assumptions and the backend architecture. 
 
 ## Questions
 
@@ -57,6 +57,9 @@ auth/token
 - [Confirmation of 401 vs 403 use-cases](https://webmasters.stackexchange.com/a/90656)
 - [Why is res returned in some places and not returned if it's the last thing in the function definition?](https://stackoverflow.com/q/52919585)
 
+src
+- [react router](https://freecodecamp.org/news/react-router-in-5-minutes)
+
 src/redux/actions
 - [access redux store outside component](https://daveceddia.com/access-redux-store-outside-react/)
 - [Why didn't I prepend "http://localhost:5000/" to my URLs? I set "proxy" in package.json. It's http in development and https in production... Since in production, React is built in /build and served by Express, so the server and client are of the same origin in Heroku.](https://create-react-app.dev/docs/proxying-api-requests-in-development)
@@ -69,6 +72,9 @@ src/redux/reducer
 src/components/Home
 - [<Link>'s with props](https://tylermcginnis.com/react-router-pass-props-to-link)
 - [mapState](https://react-redux.js.org/using-react-redux/connect-mapstate)
+
+src/components/Chat
+- [URL parameters](https://tylermcginnis.com/react-router-url-parameters)
 
 src/components/Register
 - [Conditional redirect in render(). I just combined it with redux](https://tylermcginnis.com/react-router-programmatically-navigate)

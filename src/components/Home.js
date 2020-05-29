@@ -1,12 +1,13 @@
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux'; // Redux
 import PropTypes from 'prop-types';
 import { getAllUsers } from '../redux/actions';
 import { Link } from 'react-router-dom'; // Router
 import Navbar from './Navbar';
+import Footer from './Footer';
 import { Supplycons } from './supplycon';
 
-class Home extends Component { 
+class Home extends Component {
 	constructor(props) { // React boilerplate 
 		super(props);
 		this.state = { group: 'need' };
@@ -20,17 +21,16 @@ class Home extends Component {
 	// 'have' or 'need' – which users are we displaying? 
 	onGroupClick({ target }) { this.setState({ group: target.value }); }
 
-	
+
 	render() { // Destructuring helps in the long run. Think long term. 
 		const { state, onGroupClick, props } = this;
 		const { username, allUsers } = props;
 
-		return (<Fragment>
+		return (<div id="Home-page">
 			<Navbar /> {/* Links to other pages */}
-			{!!username ? undefined : <div className="Register-or-log-in">
-				<Link to='/register'>Register with us!</Link>
-				<Link to='/login'>Or log in</Link>
-			</div>}
+			{!!username ? undefined : <div id="Register-Login-links">
+				<Link to='/register'>Register with StaySafeSacramento</Link>
+				<Link to='/login'>Log in instead</Link></div>}
 
 			{/* Are we displaying users with at least one element in their 'have' or their 'need' array? */}
 			<h3>Find people who...</h3>
@@ -59,7 +59,8 @@ class Home extends Component {
 					</li>);
 				})
 			}</ul>
-		</Fragment>);
+			<Footer />
+		</div>);
 	}
 }
 

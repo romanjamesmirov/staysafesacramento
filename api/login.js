@@ -1,8 +1,9 @@
-// This route authenticates an existing user. 
+// This route authenticates an existing user.
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const loginValidation = require('../auth/login');
+
 module.exports = async (req, res) => {
 	const { error } = loginValidation(req.body);
 	if (error) return res.status(400).send(error.details[0].message);

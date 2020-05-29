@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { sendMsg } from '../redux/actions';
+import { message } from '../redux/actions';
 // Redux up top, router down bottom
 import { Redirect, Link } from 'react-router-dom';
 import Navbar from './Navbar';
@@ -50,10 +50,10 @@ class Chat extends Component {
 	onSubmit(e) {
 		e.preventDefault();
 		const { contact, newMsg } = this.state;
-		const { name, sendMsg } = this.props;
+		const { name, message } = this.props;
 		const formatted = { text: newMsg, from: name, when: new Date() };
 		const pastMessages = [...contact.pastMessages, formatted];
-		sendMsg('send message', { to: contact.username, newMsg });
+		message('send message', { to: contact.username, newMsg });
 		this.setState({ contact: { ...contact, pastMessages }, newMsg: '' });
 	}
 
@@ -93,12 +93,9 @@ function findByUsername(users, username) { // CUSTOM RECURSION
 	return users[0];
 }
 
-Chat.propTypes = { sendMsg: PropTypes.func.isRequired };
+Chat.propTypes = { message: PropTypes.func.isRequired };
 const mapStateToProps = state => {
 	const { contacts, allUsers, name, token } = state.data;
 	return { contacts, allUsers, name, token };
 };
-export default connect(mapStateToProps, { sendMsg })(Chat);
-
-// RESOURCES
-// tylermcginnis.com/react-router-url-parameters
+export default connect(mapStateToProps, { message })(Chat);

@@ -1,18 +1,22 @@
-if (process.env.NODE_ENV !== 'production') require('dotenv').config();
-require('mongoose').connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true }); // DB: ✅
+if (process.env.NODE_ENV !== 'production') require('dotenv').config(); 
+const { NODE_ENV, PORT, DB_CONNECT } = process.env; 
+const connectOptions = { useNewUrlParser: true, useUnifiedTopology: true };
+require('mongoose').connect(DB_CONNECT, connectOptions); // DB: ✅
 
 const express = require('express'), app = express();
 app.use(express.json());
-if (process.env.NODE_ENV === 'production') {
-	const path = require('path');
-	app.enable('trust proxy')
-		.use(function (req, res, next) {
-			if (req.secure) return next();
-			res.redirect(`https://${req.headers.host}${req.url}`);
-		})
-		.use('/api', require('./api'))
-		.use(express.static(path.join(__dirname, 'build')))
-		.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'build',
-			'index.html')));
+if (NODE_ENV === 'production') {
+	const { join } = require('path');
+	app.enable('trust proxy');
+	app.use(secureRedirect);
+	app.use('/api', require('./api'));
+	app.use(express.static(join(__dirname, 'build')));
+	app.get('/*', (req, res) => res.sendFile(join(__dirname, 'build',
+		'index.html')));
 } else app.use('/api', require('./api'));
-app.listen(process.env.PORT); // Server: ✅
+app.listen(PORT); // Server: ✅
+
+function secureRedirect({ secure, headers, url }, { redirect }, next) {
+	if (secure) return next();
+	redirect(`https://${headers.host}${url}`);
+}
