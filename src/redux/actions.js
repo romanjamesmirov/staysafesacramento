@@ -1,33 +1,37 @@
 import store from './store';
 import authenticate from './authenticate';
 
-export const REGISTER = 'REGISTER'; //⬇POST actions
+//⬇POST actions
+export const REGISTER = 'REGISTER'; 
+export const register = formData => async dispatch => {
+	const payload = await authenticate(formData, 'register');
+	console.log(payload)
+	if (payload instanceof Error) return payload;
+	dispatch({ type: REGISTER, payload });
+}
+
 export const LOGIN = 'LOGIN';
+export const login = formData => async dispatch => {
+	const payload = await authenticate(formData, 'login');
+	if (payload instanceof Error) return payload;
+	dispatch({ type: LOGIN, payload });
+}
+
 export const MESSAGE = 'MESSAGE';
-export const register = formData => dispatch => {
-	const payload = authenticate(formData, 'register');
-	if (!!payload) dispatch({ type: REGISTER, payload });
-}
-export const login = formData => dispatch => {
-	const payload = authenticate(formData, 'login');
-	if (!!payload) dispatch({ type: LOGIN, payload });
-}
 export const message = (to, text) => dispatch => {
 	const { token, username } = store.getState().data;
-	const headers = //⬇POST message
+	const headers = 
 		{ 'Content-Type': 'text/plain', 'Authorization': `Bearer ${token}` };
-	fetch(`/api/message/${to}`, { method: 'POST', headers, body: text })
-		.then(res => {
-			if (res.status !== 200) throw new Error();
-			const message = { from: username, when: new Date(), text }; //⬇dispatch
-			dispatch({ type: MESSAGE, payload: { to, message } });
-		})
-		.catch(e => console.error('Failed to save new message'));
+	try {
+		const res = fetch(`/api/message/${to}`, { method: 'POST', headers, body: text });
+		if (res.status !== 200) throw new Error('Could not save the new message');
+		const message = { from: username, when: new Date(), text };
+		dispatch({ type: MESSAGE, payload: { to, message } });
+	} catch (error) { return error; }
 };
 
-export const GET_ALL_USERS = 'GET_ALL_USERS'; //⬇GET actions
-export const GET_CONTACTS = 'GET_CONTACTS';
-export const GET_CHAT = 'GET_CHAT';
+//⬇GET actions
+export const GET_ALL_USERS = 'GET_ALL_USERS'; 
 export const getAllUsers = () => async dispatch => {
 	try {
 		const res = await fetch('/api/users'); // no query params = all users
@@ -35,6 +39,8 @@ export const getAllUsers = () => async dispatch => {
 		res.json().then(payload => dispatch({ type: GET_ALL_USERS, payload }));
 	} catch (error) { console.error(error); }
 }
+
+export const GET_CONTACTS = 'GET_CONTACTS';
 export const getContacts = contacts => async dispatch => {
 	const usernames = contacts.map(({ username }, index) => username);
 	try { // query params = just give me these users
@@ -43,6 +49,8 @@ export const getContacts = contacts => async dispatch => {
 		res.json().then(payload => dispatch({ type: GET_CONTACTS, payload }));
 	} catch (error) { console.error(error); }
 }
+
+export const GET_CHAT = 'GET_CHAT';
 export const getChat = to => async dispatch => {
 	const { token, contacts } = store.getState().data;
 	const isNotFirstLoadParam = (function () { 

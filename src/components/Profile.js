@@ -1,9 +1,7 @@
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // Redux up top, router down bottom
-import { Redirect, Link } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import { Redirect } from 'react-router-dom';
 
 // React boilerplate
 class Me extends Component {
@@ -20,14 +18,12 @@ class Me extends Component {
 			const to = { pathname: '/login', state: { next: 'PROFILE' } };
 			return <Redirect to={to} />;
 		}
-		return (<Fragment>
-			<Navbar />
+		return (<main>
 			<div><button>Edit profile</button></div>
 			<h1>{name}</h1>
 			<div><button>Log out</button></div>
 			<div><button>Delete account</button></div>
-			<Footer />
-		</Fragment>);
+		</main>);
 	}
 }
 

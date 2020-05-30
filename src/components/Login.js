@@ -1,9 +1,8 @@
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react'; // redux
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { login } from '../redux/actions'; // Router below
-import { Redirect, Link } from 'react-router-dom'; // Redux above
-import Navbar from './Navbar';
+import { login } from '../redux/actions'; 
+import { Redirect, Link } from 'react-router-dom'; // router
 
 class Login extends Component {
 	constructor(props) { // React boilerplate
@@ -16,10 +15,10 @@ class Login extends Component {
 		this.onSubmit = this.onSubmit.bind(this);
 	}
 
-	onSubmit(e) { // POST form data to /api/login
+	async onSubmit(e) { // POST form data to /api/login
 		e.preventDefault();
 		const { username, password } = this.state;
-		this.props.login({ username, password });
+		await this.props.login({ username, password }, 'login'); // formData param
 	}
 
 	onChange({ target }) { this.setState({ [target.name]: target.value }); }
@@ -42,8 +41,7 @@ class Login extends Component {
 		}
 		if (!!token) return <Redirect to={next} />;
 
-		return (<Fragment> {/* The GUI */}
-			<Navbar />
+		return (<main> {/* The GUI */}
 			<div><Link to={{
 				pathname: '/register',
 				state: { next }
@@ -63,7 +61,7 @@ class Login extends Component {
 
 				<button type="submit">Login</button> {/* Redux login() */}
 			</form>
-		</Fragment>);
+		</main>);
 	}
 }
 

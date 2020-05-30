@@ -3,8 +3,6 @@ import { connect } from 'react-redux'; // Redux
 import PropTypes from 'prop-types';
 import { getAllUsers } from '../redux/actions';
 import { Link } from 'react-router-dom'; // Router
-import Navbar from './Navbar';
-import Footer from './Footer';
 import { Supplycons } from './supplycon';
 
 class Home extends Component {
@@ -26,29 +24,32 @@ class Home extends Component {
 		const { state, onGroupClick, props } = this;
 		const { username, allUsers } = props;
 
-		return (<div id="Home-page">
-			<Navbar /> {/* Links to other pages */}
+		return (<main id="Home-page">
+			{/* New user on home page – give them links to sign up or sign in */}
 			{!!username ? undefined : <div id="Register-Login-links">
 				<Link to='/register'>Register with StaySafeSacramento</Link>
-				<Link to='/login'>Log in instead</Link></div>}
+				<div><hr /><p>or</p></div>
+				<Link to='/login'>Log in</Link></div>}
 
 			{/* Are we displaying users with at least one element in their 'have' or their 'need' array? */}
-			<h3>Find people who...</h3>
-			<div>
-				<input id={'id_need'} type="radio" name="group" value="need"
+			<h2>Find people who...</h2>
+			<div className="Filter-radio-button">
+				<input id="Need-radio-button-input" type="radio"
+					name="group" value="need"
 					checked={state.group === 'need'} onChange={onGroupClick} />
 				<label
-					htmlFor="id_need}">Need supplies</label>
+					htmlFor="Need-radio-button-input">Need supplies</label>
 			</div>
-			<div>
-				<input id={'id_have'} type="radio" name="group" value="have"
+			<div className="Filter-radio-button">
+				<input id="Have-radio-button-input" type="radio"
+					name="group" value="have"
 					checked={state.group === 'have'} onChange={onGroupClick} />
 				<label
-					htmlFor="id_have}">Have supplies</label>
+					htmlFor="Have-radio-button-input">Have supplies</label>
 			</div>
 
 			{/* Links to chat with users in the currently displayed group */}
-			<ul className="All-users">{
+			<ul id="All-users-list">{
 				(allUsers || []).map((user, key) => {
 					if (user[state.group].length === 0) return undefined;
 					return (<li key={key}>
@@ -59,8 +60,7 @@ class Home extends Component {
 					</li>);
 				})
 			}</ul>
-			<Footer />
-		</div>);
+		</main>);
 	}
 }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // Redux up top, router down bottom. 
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { HomeIcon, ChatIcon, ProfileIcon } from './Icons';
 
 // Links to other pages
@@ -9,11 +9,11 @@ class Navbar extends Component {
 	render() {
 		const { username } = this.props;
 		return (<div id="Navbar">
-			<Link to="/"><HomeIcon /></Link>
-			<Link to="/chats"><ChatIcon /></Link>
-			<Link to={`/${!username ? 'login' : username}`}
+			<NavLink to="/" exact><HomeIcon /></NavLink>
+			<NavLink to="/chats"><ChatIcon /></NavLink>
+			<NavLink to={`/${!username ? 'login' : username}`}
 				state={!username ? { next: 'PROFILE' } : undefined}
-				title="Profile"><ProfileIcon /></Link>
+				title="Profile"><ProfileIcon /></NavLink>
 		</div >);
 	}
 }

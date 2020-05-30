@@ -12,7 +12,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 1.9rem;
+	font-size: 1.9rem;
+	max-width: 600px;
+	margin: 0 auto;
 }
 
 code {
@@ -32,39 +34,158 @@ img, svg { display: block; }
 #Navbar {
 	display: flex;
 	align-items: center;
-	justify-content: space-evenly;
+	justify-content: center;
 	width: 100%;
+	border-bottom: 1px solid #ddd;
 }
 
 #Navbar a {
+	width: 33.3333333333%;
 	padding: 0.5em;
 }
 
-#Navbar #Active-nav-link::after {
-	content: "";
-	display: block;
-	background-color: black;
-	width: 100%;
-	height: 2px;
-	position: relative;
-	top: 5px;
+#Navbar a:hover svg, 
+#Navbar a:focus svg,
+#Navbar:hover a.active:hover svg,
+#Navbar a.active svg {
+	fill: #000;
 }
 
-/* home page */
+#Navbar a svg, 
+#Navbar:hover a.active svg {
+	fill: #777;
+}
 
-#Home-page #Register-Login-links {
+/* main */
+
+#Navbar + main {
+	min-height: calc(100vh - 15.82em);
+}
+
+/* home page – register and login links at the top */
+
+#Register-Login-links {
 	display: flex;
 	flex-flow: column;
 	align-items: center;
+	margin-top: 2em;
 }
 
-#Home-page #Register-Login-links a {
+#Register-Login-links a {
 	padding: 0.5em;
 }
 
-#Home-page #Register-Login-links a:first-child {
+#Register-Login-links a:first-child {
 	border: 2px solid black;
-	margin: 0.5em 0;
+	border-radius: 0.1em;
+	margin-bottom: 0.5em;
+	transition: border-radius 0.3s ease;
+}
+
+#Register-Login-links a:first-child:hover,
+#Register-Login-links a:first-child:focus {
+	border-radius: 1em;
+}
+
+#Register-Login-links > div {
+	position: relative;
+	width: 5em;
+	height: 1em;
+	color: #777;
+}
+
+#Register-Login-links hr {
+	position: absolute;
+	width: 100%;
+	top: 0.5em;
+	z-index: -1;
+	border: none;
+	border-bottom: 2px solid #bbb;
+}
+
+#Register-Login-links p {
+	text-align: center;
+	width: 2em;
+	height: 0.9em;
+	margin: 0 auto;
+	background-color: white;
+}
+
+#Register-Login-links a:last-child {
+	color: #777;
+}
+
+#Register-Login-links a:last-child:hover,
+#Register-Login-links a:last-child:focus {
+	color: #000;
+}
+
+/* home page – cards */
+
+h2, .Filter-radio-button {
+	padding: 0 1.9rem;
+}
+
+h2 {
+	margin-top: 1.9rem;
+}
+
+.Filter-radio-button input {
+	margin-right: 0.75em;
+}
+
+h2 + .Filter-radio-button {
+	margin: 1em 0 0.5em;
+}
+
+h2 + .Filter-radio-button + .Filter-radio-button {
+	margin-bottom: 1em;
+}
+
+#All-users-list > li {
+	border-top: 1px solid #eee;
+}
+
+#All-users-list a {
+	padding: 0.5em calc(1.9rem + 0.5em);
+	display: flex;
+	align-items: center;
+}
+
+#All-users-list a:hover, 
+#All-users-list a:focus {
+	background-color: #eee;
+}
+
+/* footer */
+
+#Footer-section {
+	background-color: #111;
+	color: white;
+	padding: 2em 1.9rem;
+	font-size: 0.9em;
+	margin-top: 1em;
+	line-height: 1.5;
+}
+
+#Footer-section > div {
+	margin-top: 1em;
+}
+
+#Footer-section > div:first-of-type {
+	margin-top: 2em;
+}
+
+#Footer-section svg {
+	fill: white;
+	display: inline-block;
+	height: 1.2em;
+	margin-bottom: -0.2em;
+	margin-right: 0.2em;
+}
+
+#Footer-section a {
+	text-decoration: underline;
 }
 
 .Me {

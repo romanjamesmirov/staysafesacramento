@@ -28,7 +28,7 @@ export function arrToObj(arr) {
 export function Supplycons(supplies) {
 	return (
 		<ul className='Supplycon-list'>{
-			supplies.map((supply, index) => {
+			(supplies || []).map((supply, index) => {
 				return (
 					<li key={index} className='Supplycon-item' title={supply}>
 						<SupplyIcon supply={supply} />
@@ -62,5 +62,6 @@ export function SupplyIcon({ supply }) {
 		case 'Hand sanitizer': return <SanitizerIcon />
 		case 'Toilet paper': return <PaperIcon />
 		case 'Ramen noodles': return <NoodlesIcon />
+		default:
 	}
 }

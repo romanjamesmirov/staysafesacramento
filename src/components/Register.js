@@ -3,7 +3,6 @@ import { connect } from 'react-redux'; // Redux
 import PropTypes from 'prop-types';
 import { register } from '../redux/actions';
 import { Redirect, Link } from 'react-router-dom'; // Router
-import Navbar from './Navbar';
 import { checkboxList, allSuppliesSetToFalse, arrWithOnlyTrueSupplies } from './supplycon'; // Static
 
 class Register extends Component {
@@ -20,12 +19,12 @@ class Register extends Component {
 		this.onSubmit = this.onSubmit.bind(this);
 	}
 
-	onSubmit(e) { // POST form data formatted for /api/register
+	async onSubmit(e) { // POST form data formatted for /api/register
 		e.preventDefault();
 		const { name, username, password } = this.state;
 		const have = arrWithOnlyTrueSupplies(this.state.have);
 		const need = arrWithOnlyTrueSupplies(this.state.need);
-		this.props.register({ name, username, password, have, need });
+		await this.props.register({ name, username, password, have, need });
 	}
 
 	onChange({ target }) { // Make form elements controlled
@@ -57,12 +56,11 @@ class Register extends Component {
 		}
 		if (!!token) return <Redirect to={next} />;
 
-		return (<div class="Register-page"> {/* The GUI */}
-			<Navbar />
+		return (<main className="Register-page"> {/* The GUI */}
 			<div><Link to={{
-				pathname: '/register',
+				pathname: '/login',
 				state: { next }
-			}}>Register instead</Link></div>
+			}}>Log in instead</Link></div>
 			<h1>{h1Text}</h1>
 			<form action="#" onSubmit={onSubmit}>
 				<div> {/* Name */}
@@ -83,7 +81,7 @@ class Register extends Component {
 				<div>{checkboxList('need', this)}</div> {/* Need */}
 				<button type="submit">Register</button>
 			</form>
-		</div>);
+		</main>);
 	}
 }
 

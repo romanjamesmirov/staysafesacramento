@@ -1,10 +1,8 @@
-import React, { Component, Fragment } from 'react'; // react
+import React, { Component } from 'react'; // react
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getContacts } from '../redux/actions'; // redux
-import { Redirect, Link } from 'react-router-dom';
-import Navbar from './Navbar'; // router
-import Footer from './Footer';
+// import { getContacts } from '../redux/actions'; // redux
+import { Redirect, Link } from 'react-router-dom'; // router
 import { Supplycons } from './supplycon.js'; // static
 
 class Chats extends Component {
@@ -31,9 +29,8 @@ class Chats extends Component {
 			}} />);
 		}
 
-		return (<Fragment> {/* GUI */}
-			<Navbar />
-			<h3>Show previous chats with people who...</h3>
+		return (<main> {/* GUI */}
+			<h3>Show contacts who...</h3>
 			<div>  {/* display the have not's? */}
 				<input id={'id_need'} type="radio" name="group" value="need"
 					checked={state.group === 'need'} onChange={onGroupClick} />
@@ -57,8 +54,7 @@ class Chats extends Component {
 					</li>);
 				})
 			}</ul>
-			<Footer />
-		</Fragment>);
+		</main>);
 	}
 }
 
