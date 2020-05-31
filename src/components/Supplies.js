@@ -41,7 +41,7 @@ export function SupplyIcon({ supply }) {
 	return <Fragment>{icon}{label}</Fragment>;
 }
 
-export function SupplyIconsList(supplies) {
+export function SupplyIconsList({ supplies }) {
 	return (<ul className='Supply-icons-list'>{
 		(supplies || []).map((supply, index) =>
 			(<li key={index} title={supply}><SupplyIcon supply={supply} /></li>)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { HomeIcon, ChatIcon, ProfileIcon, MaskIcon, SanitizerIcon, PaperIcon, NoodlesIcon } from './Icons';
+import { HomeIcon, ChatIcon, ProfileIcon, MaskIcon, SanitizerIcon, PaperIcon, NoodlesIcon, SendIcon } from './Icons';
 
 // Credits
 // <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
@@ -9,8 +9,7 @@ export default () => (<section id="Footer-section">
 		title="Roman's LinkedIn"
 		target="_blank" rel="noopener noreferrer">Roman Mirov</a> in California.</p>
 
-	<div><HomeIcon /><ChatIcon /><SanitizerIcon /><PaperIcon /><NoodlesIcon />
-		Icons made by <a href="https://www.flaticon.com/authors/freepik"
+	<div><HomeIcon /><ChatIcon /><SanitizerIcon /><PaperIcon /><NoodlesIcon /><SendIcon />Icons made by <a href="https://www.flaticon.com/authors/freepik"
 			title="Freepik"
 			target="_blank" rel="noopener noreferrer">Freepik</a> from <a
 				href="https://www.flaticon.com/" title="Flaticon"

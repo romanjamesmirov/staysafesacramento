@@ -3,8 +3,9 @@ const tokenAuth = require('../auth/token');
 
 router.post('/register', require('./register'))
 	.post('/login', require('./login'))
+	.delete('/users/delete', tokenAuth, require('./delete'))
 	.get('/users', require('./users'))
 	.get('/chat/:username', tokenAuth, require('./chat'))
-	.post('/message/:username', tokenAuth, require('./message'));
+	.post('/message', tokenAuth, require('./message'));
 
 module.exports = router;

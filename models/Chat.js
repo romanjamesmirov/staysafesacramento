@@ -5,7 +5,7 @@ const chatSchema = new Schema({
 		type: [String],
 		required: true
 	},
-	pastMessages: {
+	allMessages: {
 		type: [{
 			from: Number, // User index in `users` array  
 			when: Date,

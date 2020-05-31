@@ -61,7 +61,7 @@ class Chats extends Component {
 					return (<li key={key}>
 						<Link to={{ pathname: `/${contact.username}`, state: { contact } }}>
 							<b className='Username'>{contact.name}</b>
-							{SupplyIconsList(contact[group])}
+							<SupplyIconsList supplies={contact[group]} />
 						</Link>
 					</li>);
 				})

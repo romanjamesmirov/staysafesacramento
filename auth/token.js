@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
 	if (!token) return res.status(401).send('You must log in to do that');
 	try { // JWT validates? 
 		const { _id } = verify(token.slice(7), process.env.TOKEN_SECRET);
-		req.user = { _id }; // add contained (encrypted _id) to req obj
+		req.user_id = _id; // add contained (encrypted _id) to req obj
 		next();
 		// Unauthorized if with authorization header but it fails. 
 	} catch (error) { res.status(401).send('You must log in to do that'); }

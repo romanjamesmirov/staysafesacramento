@@ -167,19 +167,66 @@ label, button { cursor: pointer; }
 
 /* home page – cards */
 
-#All-users-list > li {
+#All-users-list > li, #Contacts-list > li {
 	border-top: 1px solid #eee;
 }
 
-#All-users-list a {
+#All-users-list a, #Contacts-list a {
 	padding: 0.5em;
 	display: flex;
 	align-items: center;
 }
 
 #All-users-list a:hover, 
-#All-users-list a:focus {
+#All-users-list a:focus,
+#Contacts-list a:hover,
+#Contacts-list a:focus {
 	background-color: #eee;
+}
+
+/* profile page */
+
+#Profile-h1-and-edit-button {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#Profile-page h1 {
+	font-size: 1.5em;
+}
+
+#Profile-h1-and-edit-button button {
+	padding: 0.25em;
+}
+
+#Profile-page-have-supplies,
+#Profile-page-need-supplies {
+	margin: 1em 0;
+	display: flex;
+	align-items: center;
+}
+
+#Profile-page > button {
+	display: block;
+	width: 100%;
+	max-width: 300px;
+	margin: 2em auto 1.5em;
+	padding: 0.25em;
+}
+
+#Profile-page > button:last-child {
+	border: none;
+	background-color: inherit;
+	color: #777;
+	font-size: 0.9em;
+	margin-top: 1.5em;
+}
+
+#Profile-page > button:last-child:hover,
+#Profile-page > button:last-child:focus {
+	color: red;
+	font-weight: 500;
 }
 
 /* footer */
@@ -299,11 +346,42 @@ label, button { cursor: pointer; }
 	margin-top: 1.5em;
 }
 
-.Me {
-	display: block;
-	width: 1.5em;
-	text-decoration: none;
-	margin: 2rem 2rem 1rem auto;
+/* chat page */
+
+#Chat-page-need, #Chat-page-have {
+	display: flex;
+	margin: 1em 0;
+}
+
+#Chats-list {
+	margin-top: 2em;
+}
+
+#Chats-list li {
+	margin: 1em 0;
+}
+
+#Chats-list li p:last-child {
+	font-size: 0.8em;
+	color: #777;
+}
+
+#Chat-page form {
+	display: flex;
+}
+
+#Chat-page form textarea {
+	width: calc(100% - 3.5em);
+	min-width: calc(100% - 3.5em);
+	max-width: calc(100% - 3.5em);
+	min-height: 2em;
+	margin-right: 1em;
+	padding: 0.4em 0.5em;
+}
+
+#Chat-page form button {
+	padding: 0 0.5em;
+	height: 2em;
 }
 
 .Icon-label {

@@ -59,7 +59,7 @@ class Home extends Component {
 					return (<li key={key}>
 						<Link to={{ pathname: `/${user.username}`, state: { user } }}>
 							<b className='Username'>{user.name}</b>
-							{SupplyIconsList(user[group])}
+							<SupplyIconsList supplies={user[group]} />
 						</Link>
 					</li>);
 				})
