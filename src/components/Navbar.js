@@ -9,12 +9,12 @@ class Navbar extends Component {
 	render() {
 		const { username } = this.props;
 		return (<div id="Navbar">
-			<NavLink to="/" exact><HomeIcon /></NavLink>
-			<NavLink to="/chats"><ChatIcon /></NavLink>
-			<NavLink to={`/${!username ? 'login' : username}`}
+			<NavLink to="/" exact title="Home"><HomeIcon /></NavLink>
+			<NavLink to="/chats" title="Chats"><ChatIcon /></NavLink>
+			<NavLink to={`/${username ? username : 'signin'}`}
 				state={!username ? { next: 'PROFILE' } : undefined}
-				title="Profile"><ProfileIcon /></NavLink>
-		</div >);
+				title="Profile" exact><ProfileIcon /></NavLink>
+		</div>);
 	}
 }
 

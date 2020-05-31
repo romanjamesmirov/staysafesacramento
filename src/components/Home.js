@@ -1,61 +1,65 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'; // Redux
-import PropTypes from 'prop-types';
-import { getAllUsers } from '../redux/actions';
 import { Link } from 'react-router-dom'; // Router
-import { Supplycons } from './supplycon';
+import { SupplyIconsList } from './Supplies';
 
 class Home extends Component {
-	constructor(props) { // React boilerplate 
+	constructor(props) {
 		super(props);
-		this.state = { group: 'need' };
+		this.state = { group: 'need', users: [] };
 		this.onGroupClick = this.onGroupClick.bind(this);
 	}
 
-	componentDidMount() { // call for all users once per session
-		if (!this.props.allUsers) return this.props.getAllUsers();
+	async componentDidMount() {
+		try {
+			const res = await fetch('/api/users'); // no query params = all users
+			if (res.status !== 200) throw new Error('Could not get users');
+			res.json().then(users => this.setState({ users }));
+		} catch (error) { this.setState({ errorMessage: error.message }); }
 	}
 
-	// 'have' or 'need' – which users are we displaying? 
+	// display the haves or the have nots? 
 	onGroupClick({ target }) { this.setState({ group: target.value }); }
 
 
 	render() { // Destructuring helps in the long run. Think long term. 
-		const { state, onGroupClick, props } = this;
-		const { username, allUsers } = props;
+		const { username } = this.props;
+		const { group, users, errorMessage } = this.state;
+		const { onGroupClick } = this;
+		const genRandomId = () => Math.floor(Math.random() * Math.pow(10, 16));
+		const randomIds = [genRandomId(), genRandomId()];
 
 		return (<main id="Home-page">
-			{/* New user on home page – give them links to sign up or sign in */}
 			{!!username ? undefined : <div id="Register-Login-links">
 				<Link to='/register'>Register with StaySafeSacramento</Link>
 				<div><hr /><p>or</p></div>
 				<Link to='/login'>Log in</Link></div>}
 
-			{/* Are we displaying users with at least one element in their 'have' or their 'need' array? */}
-			<h2>Find people who...</h2>
-			<div className="Filter-radio-button">
-				<input id="Need-radio-button-input" type="radio"
-					name="group" value="need"
-					checked={state.group === 'need'} onChange={onGroupClick} />
-				<label
-					htmlFor="Need-radio-button-input">Need supplies</label>
-			</div>
-			<div className="Filter-radio-button">
-				<input id="Have-radio-button-input" type="radio"
-					name="group" value="have"
-					checked={state.group === 'have'} onChange={onGroupClick} />
-				<label
-					htmlFor="Have-radio-button-input">Have supplies</label>
+			<div className="Filter-by-supply-group">
+				<h2>Find people who...</h2>
+				<div>
+					<input id={randomIds[0]} type="radio"	name="group" value="need"
+						checked={group === 'need'} onChange={onGroupClick} />
+					<label htmlFor={randomIds[0]}>Need supplies</label>
+					<input id={randomIds[1]} type="radio" name="group" value="have"
+						checked={group === 'have'} onChange={onGroupClick} />
+					<label htmlFor={randomIds[1]}>Have supplies</label>
+				</div>
 			</div>
 
-			{/* Links to chat with users in the currently displayed group */}
+			{!errorMessage ? undefined :
+				<div className="Error-message">
+					<p>Could not retrieve profiles</p>
+					<p>Click the Home icon to try again</p></div>}
+
 			<ul id="All-users-list">{
-				(allUsers || []).map((user, key) => {
-					if (user[state.group].length === 0) return undefined;
+				users.map((user, key) => {
+					if (user[group].length === 0) return undefined;
+					if (user.username === username) return undefined;
 					return (<li key={key}>
 						<Link to={{ pathname: `/${user.username}`, state: { user } }}>
 							<b className='Username'>{user.name}</b>
-							{Supplycons(user[state.group])}
+							{SupplyIconsList(user[group])}
 						</Link>
 					</li>);
 				})
@@ -64,10 +68,5 @@ class Home extends Component {
 	}
 }
 
-// Connect redux to this component
-Home.propTypes = { getAllUsers: PropTypes.func.isRequired };
-const mapStateToProps = state => {
-	const { allUsers, username } = state.data;
-	return { allUsers, username };
-};
-export default connect(mapStateToProps, { getAllUsers })(Home);
+const mapStateToProps = ({ data }) => ({ username: data.username });
+export default connect(mapStateToProps)(Home);

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'; // redux
-import PropTypes from 'prop-types';
-import { message } from '../redux/actions';
 import { Redirect } from 'react-router-dom'; // router
-import { Supplycons } from './supplycon';
+import { SupplyIconsList } from './Supplies';
 
 class Chat extends Component { // boilerplate
 	constructor(props) {
@@ -26,6 +24,27 @@ class Chat extends Component { // boilerplate
 			const contact = await res.json();
 			this.setState({ contact });
 		} catch (error) { console.error(error); }
+
+
+	/* OK, no. Completely redo this. Pass user metadata from Home or Chats, otherwise, if this is the first page in the session, fetch. Next, fetch the chat. Next, add a UI refresh button that fetches the chat BUT with a isNotFirstLoad query param. */
+
+
+
+
+
+		// const { token, contacts } = store.getState().data;
+		// const isNotFirstLoadParam = (function () {
+		// 	for (let i = 0; i < contacts.length; i++) {
+		// 		if (contacts[i].username !== to) continue;
+		// 		return !contacts[i].pastMessages ? '' : '?isNotFirstLoad';
+		// 	}
+		// }());
+		// try {
+		// 	const headers = { 'Authorization': `Bearer ${token}` }
+		// 	const res = await fetch(`/api/chat/${to}${isNotFirstLoadParam}`, headers);
+		// 	if (res.status !== 200) throw new Error('Could not get chat');
+		// 	res.json().then(payload => dispatch({ type: GET_CHAT, payload }));
+		// } catch (e) { console.error(e); }
 	}
 
 	onSubmit(e) { // wait for a msg submit...
@@ -53,8 +72,8 @@ class Chat extends Component { // boilerplate
 		if (this.state['404']) return <main><h1>Nobody has the username <i>{contactUsername}</i>.</h1></main>; // loaded with an error
 		return (<main> {/* GUI */}
 			<h1>{contact.name}</h1>
-			<div><span>Needs: </span>{Supplycons(contact.need)}</div>
-			<div><span>Has: </span>{Supplycons(contact.have)}</div>
+			<div><span>Needs: </span>{SupplyIconsList(contact.need)}</div>
+			<div><span>Has: </span>{SupplyIconsList(contact.have)}</div>
 			<ul>{contact.pastMessages.map((msg, key) => <li key={key}>{msg.from} at {msg.when.toString()}: {msg.text}</li>)}</ul>
 			<form onSubmit={this.onSubmit}>
 				<textarea value={newMsg} onChange={this.onChange} />
@@ -64,9 +83,8 @@ class Chat extends Component { // boilerplate
 	}
 };
 
-Chat.propTypes = { message: PropTypes.func.isRequired };
 const mapStateToProps = state => {
 	const { contacts, allUsers, name, token } = state.data;
 	return { contacts, allUsers, name, token };
 };
-export default connect(mapStateToProps, { message })(Chat);
+export default connect(mapStateToProps)(Chat);

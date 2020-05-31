@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect, Provider } from 'react-redux';
 import store from './redux/store';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 // App components
 import Home from './components/Home';
 import Chats from './components/Chats';
@@ -11,10 +11,10 @@ import Profile from './components/Profile';
 import Chat from './components/Chat';
 import Register from './components/Register';
 import Login from './components/Login';
-import './index.css';
 import NotFound from './components/NotFound';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import './index.css';
 
 const mapStateToProps = state => ({ username: state.data.username });
 const App = connect(mapStateToProps)(
@@ -26,6 +26,7 @@ const App = connect(mapStateToProps)(
       {!username ? null :
         <Route path={`/${username}`} component={Profile} />}
       <Route path='/register' component={Register} />
+      <Route path='/signin' component={props => <Redirect to="/login" state={{ next: props.location.state ? props.location.state.next : '/' }} />} />
       <Route path='/login' component={Login} />
       <Route path='/:username' component={Chat} />
       <Route component={NotFound} />

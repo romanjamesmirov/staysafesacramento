@@ -1,55 +1,67 @@
 import React, { Component } from 'react'; // react
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-// import { getContacts } from '../redux/actions'; // redux
 import { Redirect, Link } from 'react-router-dom'; // router
-import { Supplycons } from './supplycon.js'; // static
+import { SupplyIconsList } from './Supplies.js'; // static
 
 class Chats extends Component {
-	constructor(props) { // boilerplate
+	constructor(props) {
 		super(props);
-		this.state = { group: 'need' };
+		this.state = { group: 'need', contacts: [] };
+		this.onGroupClick = this.onGroupClick.bind(this);
 	}
 
-	componentDidMount() { // if first visit to this page...
-		const { contacts, getContacts } = this.props;
-		if (!contacts) getContacts(); // load contacts' data
+	async componentDidMount() {
+		const { contacts } = this.props;
+		if (!contacts) return;
+		const ids = [];
+		for (let i = 0; i < contacts.length; i++) {
+			ids[i] = contacts[i].contact_id;
+		}
+		try { // query params = just give me these users
+			const res = await fetch(`/api/users?ids=${ids.join(',')}`);
+			if (res.status !== 200) throw new Error('Could not retrieve contacts');
+			res.json().then(contacts => this.setState({ contacts }));
+		} catch (error) { this.setState({ errorMessage: error.message }); }
 	}
 
-	// are we displaying the have's or have not's? 
+	// are we displaying the haves or the have nots? 
 	onGroupClick({ target }) { this.setState({ group: target.value }); }
 
-	render() { 
-		const { state, props, onGroupClick } = this;
-		const { token, contacts } = props;
-		if (!token) { // if unauthorized...
-			return (<Redirect to={{ // redirect to login...
-				pathname: '/login',
-				state: { next: `/chats` } // and return back here after login
-			}} />);
+	render() {
+		if (!this.props.token) { // if unauthorized, log in and come back
+			const next = '/chats';
+			return <Redirect to={{ pathname: '/login', state: { next } }} />;
 		}
+		const { group, contacts, errorMessage } = this.state;
+		const { onGroupClick } = this;
+		const genRandomId = () => Math.floor(Math.random() * Math.pow(10, 16));
+		const randomIds = [genRandomId(), genRandomId()];
 
-		return (<main> {/* GUI */}
-			<h3>Show contacts who...</h3>
-			<div>  {/* display the have not's? */}
-				<input id={'id_need'} type="radio" name="group" value="need"
-					checked={state.group === 'need'} onChange={onGroupClick} />
-				<label
-					htmlFor="id_need}">Need supplies</label>
+		return (<main>
+			<div className="Filter-by-supply-group">
+				<h2>Show contacts who...</h2>
+				<div>
+					<input id={randomIds[0]} type="radio" name="group" value="need"
+						checked={group === 'need'} onChange={onGroupClick} />
+					<label htmlFor={randomIds[0]}>Need supplies</label>
+					<input id={randomIds[1]} type="radio" name="group" value="have"
+						checked={group === 'have'} onChange={onGroupClick} />
+					<label htmlFor={randomIds[1]}>Have supplies</label>
+				</div>
 			</div>
-			<div>  {/* display the have's? */}
-				<input id={'id_have'} type="radio" name="group" value="have"
-					checked={state.group === 'have'} onChange={onGroupClick} />
-				<label
-					htmlFor="id_have}">Have supplies</label>
-			</div>
-			<ul className="Contacts">{
-				(contacts || []).map((contact, key) => { // map contact objects...
-					if (contact[state.group].length === 0) return undefined;
-					return (<li key={key}>  {/* to <li>'s */}
+
+			{!errorMessage ? undefined :
+				<div className="Error-message">
+					<p>Could not retrieve profiles</p>
+					<p>Click the Home icon to try again</p></div>}
+
+			<ul id="Contacts-list">{
+				contacts.map((contact, key) => {
+					if (contact[group].length === 0) return undefined;
+					return (<li key={key}>
 						<Link to={{ pathname: `/${contact.username}`, state: { contact } }}>
 							<b className='Username'>{contact.name}</b>
-							{Supplycons(contact[state.group])}
+							{SupplyIconsList(contact[group])}
 						</Link>
 					</li>);
 				})
@@ -58,9 +70,8 @@ class Chats extends Component {
 	}
 }
 
-Chats.propTypes = { getContacts: PropTypes.func.isRequired }; //⬇attach redux
-const mapStateToProps = state => ({
-	contacts: state.data.contacts,
-	token: state.data.token
+const mapStateToProps = ({ data }) => ({
+	contacts: data.contacts,
+	token: data.token
 });
 export default connect(mapStateToProps)(Chats); 

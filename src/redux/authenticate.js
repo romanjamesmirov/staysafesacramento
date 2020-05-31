@@ -6,7 +6,6 @@ export default async (formData, type) => {
 		const res = await fetch(`/api/${type}`, { method, body, headers });
 		if (res.status !== 200) throw new Error((await res.text()));
 		const resBody = await res.json();
-		console.log(resBody)
 		const payload = {
 			name: resBody.name || formData.name, // *
 			username: resBody.username || formData.username,

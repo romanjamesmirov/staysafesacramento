@@ -1,9 +1,9 @@
-import React, { Component } from 'react'; 
+import React, { Component } from 'react';
 import { connect } from 'react-redux'; // Redux
 import PropTypes from 'prop-types';
 import { register } from '../redux/actions';
 import { Redirect, Link } from 'react-router-dom'; // Router
-import { checkboxList, allSuppliesSetToFalse, arrWithOnlyTrueSupplies } from './supplycon'; // Static
+import { CheckboxList, objWithAllSuppliesSetToFalse, supplyArrFromObj } from './Supplies'; // Static
 
 class Register extends Component {
 	constructor(props) { // React boilerplace
@@ -12,8 +12,8 @@ class Register extends Component {
 			name: '',
 			username: '',
 			password: '',
-			have: { ...allSuppliesSetToFalse },
-			need: { ...allSuppliesSetToFalse }
+			have: { ...objWithAllSuppliesSetToFalse },
+			need: { ...objWithAllSuppliesSetToFalse }
 		};
 		this.onChange = this.onChange.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
@@ -22,63 +22,51 @@ class Register extends Component {
 	async onSubmit(e) { // POST form data formatted for /api/register
 		e.preventDefault();
 		const { name, username, password } = this.state;
-		const have = arrWithOnlyTrueSupplies(this.state.have);
-		const need = arrWithOnlyTrueSupplies(this.state.need);
+		const have = supplyArrFromObj(this.state.have);
+		const need = supplyArrFromObj(this.state.need);
 		await this.props.register({ name, username, password, have, need });
 	}
 
-	onChange({ target }) { // Make form elements controlled
-		let { value, name } = target;
-		if (target.type === 'checkbox') {
-			// 'id_have_Face_masks' becomes 'Face masks'
-			const supply = target.id.split('_').slice(2).join(' ');
-			value = { ...this.state[name] };
-			value[supply] = target.checked;
-		}
-		this.setState({ [name]: value });
+	onChange({ target }) { // match state with current input values
+		let { name, value, type, checked } = target;
+		if (type !== 'checkbox') return this.setState({ [name]: value });
+		const newGroupState = { ...this.state[name] };
+		const supply = target.getAttribute('data-supply');
+		newGroupState[supply] = checked;
+		this.setState({ [name]: newGroupState });
 	}
 
-	// Define what the next page is to redirect to and redirect there if registration succeeded
-	render() {
-		const { state, onSubmit, onChange, props } = this;
-		const { token, username, match } = props;
-		let { next, name } = match.params;
-		let h1Text = 'Register with StaySafeSacramento';
-		switch (next) {
-			case undefined: next = '/'; break;
-			case 'PROFILE':
-				next = `/${username}`; // Since it's now defined
-				h1Text = 'Create your StaySafeSacramento profile';
-				break;
-			case '/chats': h1Text += ' and help others find you'; break;
-			default: // Not /, /chats, or PROFILE = it must be chat
-				h1Text += ' to talk to ' + name;
-		}
-		if (!!token) return <Redirect to={next} />;
+	render() { // redirect to where user wanted to go on successful registration
+		let next = this.props.location.state ? this.props.location.state.next : '/';
+		if (this.props.token && next !== 'PROFILE') return <Redirect to={next} />;
+		if (next === 'PROFILE') return <Redirect to={`/${this.props.username}`} />;
+		const { name, username, password } = this.state;
+		const { onSubmit, onChange } = this;
 
-		return (<main className="Register-page"> {/* The GUI */}
-			<div><Link to={{
-				pathname: '/login',
-				state: { next }
-			}}>Log in instead</Link></div>
-			<h1>{h1Text}</h1>
+		return (<main id="Register-page">
+			<div id="Register-h1-and-login-link">
+				<h1>Register</h1>
+				<Link to={{ pathname: '/login', state: { next } }}>
+					Log in instead</Link></div>
+
 			<form action="#" onSubmit={onSubmit}>
-				<div> {/* Name */}
-					<label htmlFor="id_name">Name</label>
-					<input type="text" id="id_name" name="name"
-						value={state.name} onChange={onChange} /></div>
-				<div> {/* User */}
-					<label htmlFor="id_username">Username</label>
-					<input type="text" id="id_username" name="username"
-						value={state.username} onChange={onChange} /></div>
-				<div> {/* Pass */}
-					<label htmlFor="id_password">Password</label>
-					<input type="password" id="id_password" name="password"
-						value={state.password} onChange={onChange} /></div>
+				<input type="text" name="name" placeholder="Name"
+					value={name} onChange={onChange} />
+
+				<input type="text" name="username" placeholder="Username"
+					value={username} onChange={onChange} />
+
+				<input type="password" name="password" placeholder="Password"
+					value={password} onChange={onChange} />
+
 				<h3>I have...</h3>
-				<div>{checkboxList('have', this)}</div> {/* Have */}
+				<CheckboxList id="Register-form-have-supplies" supplyGroup="have"
+					state={this.state} onChange={this.onChange} />
+
 				<h3>I need...</h3>
-				<div>{checkboxList('need', this)}</div> {/* Need */}
+				<CheckboxList id="Register-form-need-supplies" supplyGroup="need"
+					state={this.state} onChange={this.onChange} />
+
 				<button type="submit">Register</button>
 			</form>
 		</main>);
@@ -86,7 +74,7 @@ class Register extends Component {
 }
 
 Register.propTypes = { register: PropTypes.func.isRequired };
-const mapStateToProps = state => ({
-	token: state.data.token, username: state.data.token
-}); // Attach redux 
+const mapStateToProps = ({ data }) => ({
+	token: data.token, username: data.token
+});
 export default connect(mapStateToProps, { register })(Register);

@@ -16,7 +16,7 @@ module.exports = async (req, res) => { // authenticate and return existing user
 	if (!passwordCorrect) return res.status(400).send('The password is incorrect.'); // return with error if password doesn't match that of user with username
 
 	const { name, have, need, contacts } = user;
-	const token = jwt.sign(user._id.valueOf(), process.env.TOKEN_SECRET);
+	const token = jwt.sign({ _id: user._id.valueOf() }, process.env.TOKEN_SECRET);
 	res.json({ token, name, have, need, contacts });
 };
 

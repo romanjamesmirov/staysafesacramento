@@ -29,6 +29,10 @@ input, button, textarea, select, a {
 
 img, svg { display: block; }
 
+li { list-style-type: none; }
+
+label, button { cursor: pointer; }
+
 /* navbar */
 
 #Navbar {
@@ -60,6 +64,7 @@ img, svg { display: block; }
 
 #Navbar + main {
 	min-height: calc(100vh - 15.82em);
+	padding: 1em;
 }
 
 /* home page – register and login links at the top */
@@ -68,7 +73,7 @@ img, svg { display: block; }
 	display: flex;
 	flex-flow: column;
 	align-items: center;
-	margin-top: 2em;
+	margin: 1em 0;
 }
 
 #Register-Login-links a {
@@ -120,34 +125,54 @@ img, svg { display: block; }
 	color: #000;
 }
 
+/* home page – filter by supply group radio buttons */
+
+.Filter-by-supply-group {
+	margin-bottom: 2em;
+	display: flex;
+	flex-flow: column; 
+	align-items: center;
+}
+
+.Filter-by-supply-group div {
+	margin-top: 1em;
+	display: flex;
+}
+
+.Filter-by-supply-group input {
+	display: none;
+}
+
+.Filter-by-supply-group label {
+	border: 2px solid #777;
+	border-radius: 5px;
+	padding: 0.5em;
+	color: #777;
+}
+
+.Filter-by-supply-group input:focus + label,
+.Filter-by-supply-group label:hover {
+	border-color: #555;
+	color: #555;
+}
+
+.Filter-by-supply-group label:first-of-type {
+	margin-right: 1em;
+}
+
+.Filter-by-supply-group input:checked + label {
+	border-color: black;
+	color: black;
+}
+
 /* home page – cards */
-
-h2, .Filter-radio-button {
-	padding: 0 1.9rem;
-}
-
-h2 {
-	margin-top: 1.9rem;
-}
-
-.Filter-radio-button input {
-	margin-right: 0.75em;
-}
-
-h2 + .Filter-radio-button {
-	margin: 1em 0 0.5em;
-}
-
-h2 + .Filter-radio-button + .Filter-radio-button {
-	margin-bottom: 1em;
-}
 
 #All-users-list > li {
 	border-top: 1px solid #eee;
 }
 
 #All-users-list a {
-	padding: 0.5em calc(1.9rem + 0.5em);
+	padding: 0.5em;
 	display: flex;
 	align-items: center;
 }
@@ -188,6 +213,92 @@ h2 + .Filter-radio-button + .Filter-radio-button {
 	text-decoration: underline;
 }
 
+/* Login page, Register page */
+
+#Login-h1-and-register-link, #Login-page form,
+#Register-h1-and-login-link, #Register-page form {
+	padding: 1em;
+}
+
+#Login-h1-and-register-link, #Register-h1-and-login-link {
+	display: flex; 
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 0;
+}
+
+#Login-page h1, #Register-page h1 {
+	font-size: 1.5em;
+}
+
+#Login-h1-and-register-link a, 
+#Register-h1-and-login-link a {
+	color: #777;
+}
+
+#Login-h1-and-register-link a:hover,
+#Login-h1-and-register-link a:focus,
+#Register-h1-and-login-link a:hover,
+#Register-h1-and-login-link a:focus {
+	color: #000;
+}
+
+#Login-page input, #Login-page button,
+#Register-page input, #Register-page button {
+	display: block;
+	width: 100%;
+	margin: 1em 0;
+	border-width: 2px;
+	border-style: solid;
+	padding: 0.5em;
+	border-radius: 5px;
+}
+
+#Register-page h3 {
+	margin: 1em 0 0.5em;
+}
+
+#Register-form-have-supplies,
+#Register-form-need-supplies {
+	display: flex;
+}
+
+#Register-form-have-supplies input, 
+#Register-form-need-supplies input {
+	display: none;
+}
+
+#Register-form-have-supplies label,
+#Register-form-need-supplies label {
+	border: 1px solid #777;
+	padding: 0.5em;
+	border-radius: 5px;
+	margin-right: 1em;
+	color: #777;
+}
+
+#Register-form-have-supplies label.checked,
+#Register-form-need-supplies label.checked {
+	border: 2px solid black;
+	padding: calc(0.5em - 1px);
+	color: black;
+}
+
+#Register-form-have-supplies label.checked svg,
+#Register-form-need-supplies label.checked svg {
+	fill: black;
+}
+
+#Register-form-have-supplies svg,
+#Register-form-need-supplies svg {
+	width: 1.5em;
+	fill: #777;
+}
+
+#Register-page form button {
+	margin-top: 1.5em;
+}
+
 .Me {
 	display: block;
 	width: 1.5em;
@@ -200,23 +311,6 @@ h2 + .Filter-radio-button + .Filter-radio-button {
 	font-weight: 700;
 	display: block;
 	text-align: center;
-}
-
-h3 {
-	padding: 1rem 2rem;
-}
-
-/* leave almost all styles the same to make it obvious it's a button */
-/* native, platform-specific styles do best at making it clear */
-h3 button {
-	display: inline-block;
-	padding: 0.4rem 0.8rem;
-	margin: 0 0.8rem;
-	cursor: pointer;
-}
-
-li {
-	list-style-type: none;
 }
 
 .Person-item a {
@@ -240,11 +334,11 @@ li {
 	padding-right: 1rem;
 }
 
-.Supplycon-list {
+.Supply-icons-list {
 	display: flex;
 }
 
-.Supplycon-item {
+.Supply-icons-list li {
 	padding-left: 2rem;
 }
 
@@ -254,17 +348,9 @@ svg {
 	margin: 0 auto;
 }
 
-.Register-page input[type="checkbox"] {
-	display: none;
-}
-
 .Register-page label {
 	display: inline-block;
 	padding: 0.5em;
 	border-radius: 0.4rem;
 	border: 0.2rem solid transparent;
-}
-
-.Register-page label.checked {
-	border-color: #8ce;
 }
