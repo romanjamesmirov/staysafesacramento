@@ -1,5 +1,5 @@
-if (process.env.NODE_ENV !== 'production') require('dotenv').config(); 
-const { NODE_ENV, PORT, DB_CONNECT } = process.env; 
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+const { NODE_ENV, PORT, DB_CONNECT } = process.env;
 const connectOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 require('mongoose').connect(DB_CONNECT, connectOptions); // DB: ✅
 
@@ -13,6 +13,7 @@ if (NODE_ENV === 'production') {
 	app.use(express.static(join(__dirname, 'build')));
 	app.get('/*', (req, res) => res.sendFile(join(__dirname, 'build',
 		'index.html')));
+	app.get(process.env.ACME_PATH_1, (req, res) => res.send(process.env.ACME_DATA_1));
 } else app.use('/api', require('./api'));
 app.listen(PORT); // Server: ✅
 
