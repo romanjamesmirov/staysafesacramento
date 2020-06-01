@@ -7,8 +7,8 @@ const express = require('express'), app = express();
 app.use(express.json());
 if (NODE_ENV === 'production') {
 	const { join } = require('path');
-	app.enable('trust proxy');
-	app.use(secureRedirect);
+	// app.enable('trust proxy');
+	// app.use(secureRedirect);
 	app.use('/api', require('./api'));
 	app.use(express.static(join(__dirname, 'build')));
 	app.get('/*', (req, res) => res.sendFile(join(__dirname, 'build',
