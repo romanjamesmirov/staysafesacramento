@@ -18,7 +18,7 @@ if (NODE_ENV === 'production') {
 } else app.use('/api', require('./api'));
 app.listen(PORT); // Server: ✅
 
-function secureRedirect({ secure, headers, url }, { redirect }, next) {
-	if (secure) return next();
-	redirect(`https://${headers.host}${url}`);
+function secureRedirect(req, res, next) {
+	if (req.secure) return next();
+	res.redirect(`https://${req.headers.host}${req.url}`);
 }
