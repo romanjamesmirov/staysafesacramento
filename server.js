@@ -9,12 +9,12 @@ if (NODE_ENV === 'production') {
 	const { join } = require('path');
 	// app.enable('trust proxy');
 	// app.use(secureRedirect);
+	app.get(process.env.ACME_PATH_1, (req, res) => res.send(process.env.ACME_DATA_1));
+	app.get(process.env.ACME_PATH_2, (req, res) => res.send(process.env.ACME_DATA_2));
 	app.use('/api', require('./api'));
 	app.use(express.static(join(__dirname, 'build')));
 	app.get('/*', (req, res) => res.sendFile(join(__dirname, 'build',
 		'index.html')));
-	app.get(process.env.ACME_PATH_1, (req, res) => res.send(process.env.ACME_DATA_1));
-	app.get(process.env.ACME_PATH_2, (req, res) => res.send(process.env.ACME_DATA_2));
 } else app.use('/api', require('./api'));
 app.listen(PORT); // Server: ✅
 
