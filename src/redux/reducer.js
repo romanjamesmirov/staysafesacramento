@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { REGISTER, LOGIN } from './actions';
+import { REGISTER, LOGIN, ADD_CONTACT } from './actions';
 
 function reducer(state = {}, action) {
 	switch (action.type) {
@@ -7,6 +7,8 @@ function reducer(state = {}, action) {
 		case LOGIN:
 			const numUnreads = countUnreads(action.payload.contacts);
 			return { ...state, ...action.payload, numUnreads };
+		case ADD_CONTACT:
+			return { ...state, contacts: state.contacts.concat(action.payload) };
 		default: return state;
 	}
 }

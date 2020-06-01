@@ -370,46 +370,80 @@ label, button { cursor: pointer; }
 	display: flex;
 }
 
+#Chat-page form div {
+	width: auto;
+}
+
 #Chat-page form textarea {
 	width: calc(100% - 3.5em);
 	min-width: calc(100% - 3.5em);
 	max-width: calc(100% - 3.5em);
-	min-height: 2em;
+	height: 2.5em;
+	min-height: 2.5em;
 	margin-right: 1em;
 	padding: 0.4em 0.5em;
 }
 
 #Chat-page form button {
-	padding: 0 0.5em;
-	height: 2em;
+	border: none;
+	background-color: #444;
+	height: 2.5em;
+	width: 2.5em;
+	border-radius: 50%;
 }
+
+#Chat-page form button:hover,
+#Chat-page form button:focus {
+	background-color: #000;
+}
+
+#Chat-page form button svg {
+	fill: white;
+}
+
+#Chat-page-sync-button {
+	margin: 1.5em auto 0;
+	display: block;
+	padding: 0.25em;
+	border: none; 
+	background-color: inherit;
+}
+
+#Chat-page-sync-button:hover div,
+#Chat-page-sync-button:focus div {
+	background-color: #000;
+}
+
+#Chat-page-sync-button:hover span,
+#Chat-page-sync-button:focus span {
+	color: #000;
+}
+
+#Chat-page-sync-button div {
+	background-color: #444;
+	border-radius: 50%;
+	margin: 0 auto;
+	width: 2.5em;
+	height: 2.5em;
+	padding: 0.5em;
+}
+
+#Chat-page-sync-button svg {
+	fill: white;
+}
+
+#Chat-page-sync-button span {
+	font-size: 0.8em;
+	color: #777;
+}
+
+/* supply icons */
 
 .Icon-label {
 	font-size: 0.5em;
 	font-weight: 700;
 	display: block;
 	text-align: center;
-}
-
-.Person-item a {
-	border: none;
-	border-bottom: 1px solid #eee;
-	width: 100vw;
-	text-align: left;
-	text-decoration: none;
-	padding: 1rem 2rem;
-	display: flex;
-	align-items: center;
-	font-weight: 500;
-}
-
-.Person-item:hover, .Person-item:focus {
-	background-color: #f8f8f8;
-}
-
-.Person-name {
-	display: block;
-	padding-right: 1rem;
 }
 
 .Supply-icons-list {
@@ -424,11 +458,4 @@ svg {
 	width: 1.4em;
 	height: auto;
 	margin: 0 auto;
-}
-
-.Register-page label {
-	display: inline-block;
-	padding: 0.5em;
-	border-radius: 0.4rem;
-	border: 0.2rem solid transparent;
 }

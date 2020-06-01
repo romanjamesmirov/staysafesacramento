@@ -1,7 +1,7 @@
 {
   "name": "staysafesacramento",
   "version": "1.0.0",
-  "description": "Find people who have or need supplies in this pandemic",
+  "description": "Find people who have or need supplies during this pandemic.",
   "author": "Roman Mirov",
   "license": "MIT",
   "main": "server.js",

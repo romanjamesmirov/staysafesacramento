@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'; // redux
+import PropTypes from 'prop-types';
+import { addContact } from '../redux/actions';
 import { Redirect } from 'react-router-dom'; // router
 import { SupplyIconsList } from './Supplies';
 import moment from 'moment';
-import { SendIcon } from './Icons';
+import { SendIcon, SyncIcon } from './Icons';
 
 class Chat extends Component { // boilerplate
 	constructor(props) {
@@ -20,9 +22,10 @@ class Chat extends Component { // boilerplate
 		this.onChange = this.onChange.bind(this);
 		this.loadContact = this.loadContact.bind(this);
 		this.loadAllMessages = this.loadAllMessages.bind(this);
+		this.onSyncClick = this.onSyncClick.bind(this);
 	}
 
-	/* OK, no. Completely redo this. Pass user metadata from Home or Chats, otherwise, if this is the first page in the session, fetch. Next, fetch the chat. Next, add a UI refresh button that fetches the chat BUT with a ?isNotFirstLoad query param. */
+	/* add a UI refresh button that fetches the chat BUT with a ?justCheckForUnreads query param. */
 	async componentDidMount() {
 		if (!this.props.token) return this.setState({ '401': true }); // authorized?
 		await this.loadContact(this.loadAllMessages);
@@ -49,7 +52,7 @@ class Chat extends Component { // boilerplate
 		} // skip loading all messages if they haven't talked before
 		try {
 			const headers = { Authorization: `Bearer ${this.props.token}` };
-			const res = await fetch(`/api/chat/${contact.username}`, { headers });
+			const res = await fetch(`/api/chat/${contact._id}`, { headers });
 			if (res.status !== 200) throw new Error('Could not load previous messages');
 			res.json().then(({ users, allMessages }) =>
 				this.setState({ allMessages, chatUsers: users }));
@@ -58,21 +61,31 @@ class Chat extends Component { // boilerplate
 
 	async onSubmit(e) { // wait for a msg submit...
 		e.preventDefault();
-		const { contact, newMsg, chatUsers } = this.state;
+		const { contact, newMsg, chatUsers, allMessages } = this.state;
 		if (!contact) return;
-		const { token, _id } = this.props;
+		const { token, _id, addContact } = this.props;
 		const body = { contact_id: contact._id, msg: newMsg }, method = 'POST',
 			headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 		try {
 			const res = await fetch(`/api/message`, { body: JSON.stringify(body), method, headers });
 			if (res.status !== 200) throw new Error('Message could not send');
 		} catch (error) { return this.setState({ errorMessage: error.message }); }
+		if (!allMessages.length) addContact({ contact_id: contact._id, hasUnread: false });
 		const from = chatUsers[0] === _id ? 1 : 0;
 		const msgFormatted = { text: newMsg, from, when: new Date() };
-		this.setState(state => ({ allMessages: [...state.allMessages, msgFormatted], newMsg: '' }));
+		this.setState(state => ({ newMsg: '', allMessages: state.allMessages.concat(msgFormatted) }));
 	}
 
 	onChange({ target }) { this.setState({ newMsg: target.value }); } // control
+
+	async onSyncClick() {
+		try {
+			const headers = { Authorization: `Bearer ${this.props.token}` };
+			const res = await fetch(`/api/chat/${this.state.contact._id}?justCheckForUnreads`, { headers });
+			if (res.status !== 200 && res.status !== 304) throw new Error('Could not refresh');
+			if (res.status === 200) res.json().then(({ users, allMessages }) => this.setState({ users, allMessages })); // Otherwise, it's a 304 Not Modified
+		} catch (error) { this.setState({ errorMessage: error.message }); }
+	}
 
 	render() {
 		const contactUsername = this.props.match.params.username;
@@ -100,15 +113,20 @@ class Chat extends Component { // boilerplate
 				: <div className="Error-message">{this.state.errorMessage}</div>}
 
 			<form onSubmit={this.onSubmit}>
-				<textarea value={newMsg} onChange={this.onChange} />
+				<textarea value={newMsg} onChange={this.onChange} placeholder={`Reach out to ${contact.name}`} />
 				<button type='submit'><SendIcon /></button>
 			</form>
+
+			<button onClick={this.onSyncClick} id="Chat-page-sync-button">
+				<div><SyncIcon /></div>
+				<span>Click to refresh chat</span></button>
 		</main>);
 	}
 };
 
+Chat.propTypes = { addContact: PropTypes.func.isRequired };
 const mapStateToProps = ({ data }) => {
 	const { contacts, name, token } = data;
 	return { contacts, name, token };
 };
-export default connect(mapStateToProps)(Chat);
+export default connect(mapStateToProps, { addContact })(Chat);

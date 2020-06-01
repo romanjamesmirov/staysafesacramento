@@ -13,3 +13,7 @@ export const login = formData => async dispatch => {
 	if (payload instanceof Error) return payload;
 	dispatch({ type: LOGIN, payload });
 }
+
+export const ADD_CONTACT = 'ADD_CONTACT';
+export const addContact = contact => dispatch =>
+	dispatch({ type: ADD_CONTACT, payload: contact });

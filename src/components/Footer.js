@@ -1,5 +1,5 @@
 import React from 'react';
-import { HomeIcon, ChatIcon, ProfileIcon, MaskIcon, SanitizerIcon, PaperIcon, NoodlesIcon, SendIcon } from './Icons';
+import { HomeIcon, ChatIcon, ProfileIcon, MaskIcon, SanitizerIcon, PaperIcon, NoodlesIcon, SendIcon, SyncIcon } from './Icons';
 
 // Credits
 // <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
@@ -27,4 +27,6 @@ export default () => (<section id="Footer-section">
 		target="_blank" rel="noopener noreferrer">Gregor Cresnar</a> from <a
 			href="https://www.flaticon.com/" title="Flaticon"
 			target="_blank" rel="noopener noreferrer">www.flaticon.com</a></div>
+
+	<div><SyncIcon />Icon made by <a href="https://creativemarket.com/Becris" title="Becris">Becris</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 </section >);
