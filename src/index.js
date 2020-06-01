@@ -26,7 +26,7 @@ const App = connect(mapStateToProps)(
       {!username ? null :
         <Route path={`/${username}`} component={Profile} />}
       <Route path='/register' component={Register} />
-      <Route path='/signin' component={props => <Redirect to="/login" state={{ next: props.location.state ? props.location.state.next : '/' }} />} />
+      {/* <Route path='/signin' component={props => <Redirect to="/login" state={{ next: props.location.state ? props.location.state.next : '/' }} />} /> */}
       <Route path='/login' component={Login} />
       <Route path='/:username' component={Chat} />
       <Route component={NotFound} />
